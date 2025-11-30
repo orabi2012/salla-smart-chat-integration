@@ -9,7 +9,6 @@ import {
   BeforeUpdate,
   AfterLoad,
 } from 'typeorm';
-import { SallaStoreProduct } from './salla-store-products.entity';
 
 export enum SyncStatus {
   PENDING = 'pending',
@@ -101,10 +100,6 @@ export class SallaStore {
 
   @Column({ type: 'text', nullable: true })
   last_error_message: string;
-
-  // Relations
-  @OneToMany(() => SallaStoreProduct, (storeProduct) => storeProduct.sallaStore)
-  storeProducts: SallaStoreProduct[];
 
   @CreateDateColumn()
   created_at: Date;

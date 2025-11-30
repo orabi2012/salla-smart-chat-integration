@@ -265,13 +265,6 @@ This integration uses **automatic webhook-based setup** with zero manual configu
 - `POST /clients/edit/:id` - Update store settings with automatic encryption
 - `POST /clients/toggle-status/:id` - Toggle store active/inactive status
 
-### Product & Stock Management
-- `GET /clients/stock/:id` - Stock management interface
-- `POST /clients/stock/:id/save-levels` - Update stock levels in bulk
-- `POST /clients/stock/:storeId/refresh-single` - Refresh single product stock
-- `POST /clients/stock/:storeId/refresh-all` - Refresh all store stock from Salla
-- `GET /clients/sync/:id` - Product synchronization interface
-
 ### Salla Store Integration
 - `POST /salla-stores/:id/test-ubiqfy-auth` - Test Ubiqfy connection and fetch balance
 - `POST /salla-stores/:id/fetch-ubiqfy-products` - Fetch product catalog from Ubiqfy

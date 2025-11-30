@@ -2,13 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/users.entity';
 import { SallaStore } from './salla-stores/salla-stores.entity';
-import { SallaStoreProduct } from './salla-stores/salla-store-products.entity';
-import { SallaStoreProductOption } from './salla-stores/salla-store-product-option.entity';
-import { UbiqfyProduct } from './ubiqfy-products/ubiqfy-product.entity';
-import { UbiqfyProductOption } from './ubiqfy-products/ubiqfy-product-option.entity';
-import { MerchantVoucherPurchase } from './voucher-purchases/merchant-voucher-purchase.entity';
-import { MerchantVoucherPurchaseItem } from './voucher-purchases/merchant-voucher-purchase-item.entity';
-import { MerchantVoucherPurchaseDetail } from './voucher-purchases/merchant-voucher-purchase-detail.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
@@ -42,13 +35,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
                     entities: [
                         User,
                         SallaStore,
-                        SallaStoreProduct,
-                        SallaStoreProductOption,
-                        UbiqfyProduct,
-                        UbiqfyProductOption,
-                        MerchantVoucherPurchase,
-                        MerchantVoucherPurchaseItem,
-                        MerchantVoucherPurchaseDetail
                     ],
                     synchronize: !isProduction,
                     ssl: sslConfig,

@@ -68,27 +68,6 @@
                                         <i class="fas fa-cogs fa-lg me-2"></i>
                                         <span class="fw-semibold">Store Settings</span>
                                     </a>
-                                    <a href="/clients/sync/<%= store.id %>"
-                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="Fetch products from Ubiqfy and sync them to your Salla store">
-                                        <i class="fas fa-sync-alt fa-lg me-2"></i>
-                                        <span class="fw-semibold">Sync Management</span>
-                                    </a>
-                                    <a href="/clients/stock/<%= store.id %>"
-                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="Manage stock levels and purchase codes for synced products">
-                                        <i class="fas fa-cubes fa-lg me-2"></i>
-                                        <span class="fw-semibold">Stock Management</span>
-                                    </a>
-                                    <a href="/store/<%= store.id %>/purchase-orders"
-                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="View and manage purchase orders for this store">
-                                        <i class="fas fa-shopping-cart fa-lg me-2"></i>
-                                        <span class="fw-semibold">Purchase Orders</span>
-                                    </a>
                                     <% if (user.isSuperadmin) { %>
                                         <a href="/admin/dashboard"
                                             class="nav-link text-white d-flex align-items-center justify-content-center py-3"

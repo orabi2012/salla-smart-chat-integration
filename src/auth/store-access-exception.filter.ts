@@ -20,9 +20,7 @@ export class StoreAccessExceptionFilter implements ExceptionFilter {
         const acceptHeader = request.headers.accept || '';
         const isApiRequest = acceptHeader.includes('application/json') ||
             request.path.startsWith('/api/') ||
-            request.path.startsWith('/salla-stores/') ||
-            request.path.startsWith('/ubiqfy-products/') ||
-            request.path.startsWith('/voucher-purchases/');
+            request.path.startsWith('/salla-stores/');
 
         if (isApiRequest) {
             // Return JSON response for API requests

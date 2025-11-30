@@ -17,14 +17,12 @@ import { SuperAdminGuard } from '../auth/super-admin.guard';
 import { StoreAccessGuard } from '../auth/store-access.guard';
 import { SallaStoresService } from '../salla-stores/salla-stores.service';
 import { SallaStore } from '../salla-stores/salla-stores.entity';
-import { DoTransactionService } from '../voucher-purchases/dotransaction.service';
 
 @Controller('clients')
 @UseGuards(AuthGuard('jwt'))
 export class ClientsController {
   constructor(
     private readonly sallaStoresService: SallaStoresService,
-    private readonly doTransactionService: DoTransactionService
   ) { }
 
   @Get()
@@ -84,156 +82,6 @@ export class ClientsController {
       user: req.user,
       store: store,
     };
-  }
-
-  @Get('stock/:id')
-  @UseGuards(StoreAccessGuard)
-  @Render('clients/stock')
-  async getStockManagement(@Request() req, @Param('id') id: string) {
-    const store = await this.sallaStoresService.findById(id);
-    if (!store) {
-      return { redirect: '/clients?error=store_not_found' };
-    }
-
-    // Get comprehensive stock info including voucher tracking
-    const stockInfo = await this.doTransactionService.getStoreStockInfo(id);
-
-    // Get all synced product options for this store (for backward compatibility)
-    const syncedOptions = await this.sallaStoresService.getSyncedProductOptions(id);
-
-    return {
-      title: 'Stock Management - ' + store.salla_store_name,
-      user: req.user,
-      store: store,
-      syncedOptions: syncedOptions,
-      stockInfo: stockInfo, // Enhanced stock information with voucher tracking
-    };
-  }
-
-  @Get('stock/:id/navigate')
-  @UseGuards(StoreAccessGuard)
-  async navigateToStockAfterPurchase(@Request() req, @Param('id') id: string, @Res() res) {
-    try {
-      // This endpoint is called after successful voucher purchase processing
-      // to refresh stock and navigate to the stock management page
-
-      const store = await this.sallaStoresService.findById(id);
-      if (!store) {
-        return res.redirect('/clients?error=store_not_found');
-      }
-
-      // Optional: You could refresh Salla stock data here if needed
-      // await this.sallaStoresService.refreshSallaStockData(id);
-
-      // Navigate to stock management page with success message
-      return res.redirect(`/clients/stock/${id}?success=vouchers_synced_successfully`);
-
-    } catch (error) {
-      console.error('Error navigating to stock page:', error);
-      return res.redirect(`/clients/stock/${id}?error=navigation_failed`);
-    }
-  }
-
-  @Get('sync/:id')
-  @UseGuards(StoreAccessGuard)
-  @Render('clients/sync')
-  async getSyncManagement(@Request() req, @Param('id') id: string) {
-    const store = await this.sallaStoresService.findById(id);
-    if (!store) {
-      return { redirect: '/clients?error=store_not_found' };
-    }
-
-    return {
-      title: 'Sync Management - ' + store.salla_store_name,
-      user: req.user,
-      store: store,
-    };
-  }
-
-  @Post('stock/:id/save-levels')
-  @UseGuards(StoreAccessGuard)
-  async saveStockLevels(@Param('id') storeId: string, @Body() body: { stockLevels: Array<{ optionId: string, stockLevel: number }> }, @Res() res) {
-    try {
-      const { stockLevels } = body;
-
-      if (!stockLevels || !Array.isArray(stockLevels)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid stock levels data'
-        });
-      }
-
-      // Validate each stock level
-      for (const item of stockLevels) {
-        if (!item.optionId || typeof item.stockLevel !== 'number' || item.stockLevel < 0) {
-          return res.status(400).json({
-            success: false,
-            message: `Invalid data for option ${item.optionId}: stock level must be a number >= 0`
-          });
-        }
-      }
-
-      // Update stock levels in database
-      const updated = await this.sallaStoresService.updateStockLevels(stockLevels);
-
-      return res.json({
-        success: true,
-        updated: updated,
-        message: `Successfully updated ${updated} stock level(s)`
-      });
-
-    } catch (error) {
-      console.error('Error saving stock levels:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to save stock levels: ' + error.message
-      });
-    }
-  }
-
-  @Post('stock/:storeId/refresh-single')
-  @UseGuards(StoreAccessGuard)
-  async refreshSingleStock(
-    @Param('storeId') storeId: string,
-    @Body() body: { optionId: string, sallaProductId: string }
-  ) {
-    try {
-      const { optionId, sallaProductId } = body;
-
-      if (!optionId || !sallaProductId) {
-        return {
-          success: false,
-          message: 'Option ID and Salla Product ID are required'
-        };
-      }
-
-      const result = await this.sallaStoresService.refreshSingleProductStock(optionId, sallaProductId);
-
-      return result;
-
-    } catch (error) {
-      console.error('Error refreshing single stock:', error);
-      return {
-        success: false,
-        message: 'Failed to refresh stock: ' + error.message
-      };
-    }
-  }
-
-  @Post('stock/:storeId/refresh-all')
-  @UseGuards(StoreAccessGuard)
-  async refreshAllStock(@Param('storeId') storeId: string) {
-    try {
-      const result = await this.sallaStoresService.refreshAllStoreStock(storeId);
-      return result;
-
-    } catch (error) {
-      console.error('Error refreshing all stock:', error);
-      return {
-        success: false,
-        message: 'Failed to refresh all stock: ' + error.message
-      };
-    }
   }
 
   @Post('add')

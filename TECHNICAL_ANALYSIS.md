@@ -522,9 +522,7 @@ views/
 ├── clients/
 │   ├── index.ejs               # Store listing
 │   ├── add.ejs                 # Add new store
-│   ├── edit.ejs                # Edit store settings
-│   ├── sync.ejs                # Product synchronization
-│   └── stock.ejs               # Stock management
+│   └── edit.ejs                # Edit store settings
 ├── purchase/
 │   ├── create.ejs              # Purchase order creation
 │   ├── orders.ejs              # Order management
@@ -560,10 +558,8 @@ public/js/
 ├── bootstrap-init.js           # Bootstrap component initialization
 ├── toast-utils.js              # Notification system
 ├── store-data-init.js          # Data initialization
-├── edit-page.js                # Product sync functionality
-├── product-sync.js             # Sync operations
+├── edit-page.js                # Store settings interactions
 ├── pricing-management.js       # Price calculations
-├── stock-page.js               # Inventory management
 ├── purchase-order.js           # Order processing
 ├── purchase-create-utils.js    # Order creation helpers
 └── user-management.js          # User operations

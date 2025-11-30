@@ -71,8 +71,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
                 request.headers['accept']?.includes('application/json') ||
                 request.url.startsWith('/api/') ||
                 request.url.startsWith('/salla-stores/') ||
-                request.url.startsWith('/ubiqfy-products/') ||
-                request.url.startsWith('/voucher-purchases/') ||
                 request.xhr;
 
             if (isApiRequest) {

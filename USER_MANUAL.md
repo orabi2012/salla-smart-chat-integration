@@ -11,13 +11,11 @@
 ## Table of Contents
 1. [Getting Started](#getting-started)
 2. [Store Settings](#store-settings)
-3. [Sync Management](#sync-management)
-4. [Stock Management](#stock-management)
-5. [Purchase Orders](#purchase-orders)
-6. [Analytics & Reporting](#analytics--reporting)
-7. [Webhook Management](#webhook-management)
-8. [Troubleshooting](#troubleshooting)
-9. [Support](#support)
+3. [Purchase Orders](#purchase-orders)
+4. [Analytics & Reporting](#analytics--reporting)
+5. [Webhook Management](#webhook-management)
+6. [Troubleshooting](#troubleshooting)
+7. [Support](#support)
 
 ---
 
@@ -27,7 +25,7 @@
 The Salla-Ubiqfy Integration Platform is a comprehensive solution that bridges Salla e-commerce stores with Ubiqfy's voucher services. This platform enables seamless:
 
 - **Automated Integration**: OAuth-based connection with Salla stores
-- **Product Synchronization**: Real-time sync between Ubiqfy and Salla catalogs
+- **Store Insights**: Real-time access to Salla store and product information
 - **Voucher Management**: Complete lifecycle management of digital vouchers
 - **Order Processing**: Streamlined purchase order workflow
 - **Financial Tracking**: Detailed reporting and invoice generation
@@ -73,92 +71,13 @@ Monitor your integration health through:
 
 ---
 
-## Sync Management
-
-Product synchronization allows you to fetch products from Ubiqfy and sync them to your Salla store.
-
-### Accessing Sync Management
-1. From the dashboard, click "Product Sync" or use the navigation menu
-2. Select "Sync Management" from the navigation bar
-
-### Authentication & Setup
-Before syncing products, you need to:
-1. **Test Ubiqfy Authentication**:
-   - Click "Test Ubiqfy Auth" to verify your API credentials
-   - This will also fetch your current account balance
-2. **Fetch Products**:
-   - Click "Fetch Products" to retrieve available products from Ubiqfy
-
-### Syncing Products
-1. **Product Selection**:
-   - Browse through available Ubiqfy products
-   - Use the search box to filter products by name
-   - Review product details including:
-     - Product name and description
-     - Face value and wholesale price
-     - Currency conversion rates
-     - Available options/variations
-
-2. **Configure Sync Settings**:
-   - Set pricing rules and markups
-   - Configure currency conversion rates
-   - Select which product options to sync
-
-3. **Execute Sync**:
-   - Select products or product options to sync
-   - Click "Sync Selected" to start the synchronization process
-   - Monitor the sync progress and results
-
-### Sync Status Indicators
-- **Green**: Successfully synced
-- **Yellow**: Pending synchronization
-- **Red**: Sync failed (check error messages)
-
----
-
-## Stock Management
-
-Stock management helps you monitor inventory levels and create purchase orders when stock runs low.
-
-### Accessing Stock Management
-1. Navigate to "Stock Management" from the main navigation
-2. Or click "Manage Stock" from the dashboard quick actions
-
-### Stock Overview
-The stock management page displays:
-- **Store Information**: Store name, owner, and status
-- **Auto-refresh Indicator**: Shows when stock levels are being updated
-- **Product Count**: Number of synced products being monitored
-
-### Managing Stock Levels
-1. **View Current Stock**:
-   - See current stock levels for all synced products
-   - View minimum stock thresholds
-   - Monitor products that are running low
-
-2. **Set Minimum Stock Levels**:
-   - Click on quantity fields to set minimum stock thresholds
-   - Click "Save Min Stock Levels" to save your settings
-   - System will alert you when products fall below these levels
-
-3. **Refresh Stock Data**:
-   - Click "Refresh All Stock" to update stock levels from Salla
-   - Individual products can be refreshed using the refresh icon
-
-### Stock Actions
-- **Create Purchase Order**: Generate orders for products running low
-- **Bulk Operations**: Select multiple products for batch actions
-- **Export Data**: Download stock reports (if available)
-
----
-
 ## Purchase Orders
 
 Purchase orders allow you to purchase vouchers from Ubiqfy when your stock runs low.
 
 ### Accessing Purchase Orders
 1. Click "Purchase Orders" from the navigation menu
-2. Or access via "Stock Management" → "Create Purchase Order"
+2. Or open the store dashboard and select "Create Purchase Order"
 
 ### Purchase Order Workflow
 
@@ -168,7 +87,7 @@ Purchase orders allow you to purchase vouchers from Ubiqfy when your stock runs 
    - System creates a draft order with a unique order number
 
 2. **Add Items**:
-   - Select products from your synced inventory
+   - Select products from your available inventory
    - Specify quantities needed
    - Review unit prices and totals
    - Items are automatically added to the order
@@ -273,35 +192,6 @@ For each successfully generated voucher:
 
 ### Common Issues and Solutions
 
-#### Sync Problems
-**Issue**: Products not syncing from Ubiqfy
-**Solutions**:
-1. Verify Ubiqfy API credentials in store settings
-2. Check internet connection
-3. Ensure sufficient account balance
-4. Contact administrator if authentication fails
-
-**Issue**: Currency conversion errors
-**Solutions**:
-1. Verify currency conversion rates in store settings
-2. Check that both Ubiqfy and Salla currencies are configured
-3. Update conversion rates if exchange rates have changed
-
-#### Stock Management Issues
-**Issue**: Stock levels not updating
-**Solutions**:
-1. Click "Refresh All Stock" to force update
-2. Check Salla API connection
-3. Verify product synchronization status
-4. Review error messages in browser console
-
-**Issue**: Purchase orders failing
-**Solutions**:
-1. Verify sufficient Ubiqfy account balance
-2. Check product availability
-3. Ensure products are properly synced
-4. Review error messages in order details
-
 #### Order Processing Problems
 **Issue**: Vouchers not generating
 **Solutions**:
@@ -328,9 +218,9 @@ For each successfully generated voucher:
    - Time when the problem occurred
 
 ### Best Practices
-1. **Regular Monitoring**: Check stock levels and sync status regularly
+1. **Regular Monitoring**: Review store status indicators and recent purchase orders frequently
 2. **Balance Management**: Monitor your Ubiqfy account balance to avoid failed orders
-3. **Order Planning**: Plan purchase orders in advance to avoid stockouts
+3. **Order Planning**: Plan purchase orders in advance to avoid fulfillment delays
 4. **Record Keeping**: Download and save invoices for accounting purposes
 5. **Testing**: Test small orders first when setting up new products
 
@@ -359,8 +249,6 @@ For each successfully generated voucher:
 
 **Salla**: E-commerce platform where your store is hosted  
 **Ubiqfy**: Voucher provider platform for purchasing digital vouchers  
-**Sync**: Process of updating product information between Ubiqfy and Salla  
-**Stock Management**: Monitoring and controlling inventory levels  
 **Purchase Order**: Request to purchase vouchers from Ubiqfy  
 **Invoice**: Detailed record of completed voucher purchases  
 **Face Value**: The value of a voucher as seen by end customers  

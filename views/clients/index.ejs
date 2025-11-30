@@ -63,13 +63,6 @@
                                         <i class="fas fa-users fa-lg me-2"></i>
                                         <span class="fw-semibold">Users</span>
                                     </a>
-                                    <a href="/purchase-orders"
-                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="Manage purchase orders">
-                                        <i class="fas fa-shopping-cart fa-lg me-2"></i>
-                                        <span class="fw-semibold">Purchase Orders</span>
-                                    </a>
                                     <a href="/users/change-password"
                                         class="nav-link text-white d-flex align-items-center justify-content-center py-3"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
@@ -293,14 +286,6 @@
                                                                                                 title="Edit Store">
                                                                                                 <i
                                                                                                     class="fas fa-edit"></i>
-                                                                                            </a>
-                                                                                            <a href="/clients/stock/<%= store.id %>"
-                                                                                                class="btn btn-sm btn-outline-success"
-                                                                                                data-bs-toggle="tooltip"
-                                                                                                data-bs-placement="top"
-                                                                                                title="Stock Management">
-                                                                                                <i
-                                                                                                    class="fas fa-boxes"></i>
                                                                                             </a>
                                                                                             <% if (user.isSuperadmin) {
                                                                                                 %>
