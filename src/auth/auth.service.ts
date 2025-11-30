@@ -8,7 +8,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
     try {
@@ -24,7 +24,10 @@ export class AuthService {
       }
 
       // Validate password
-      const isPasswordValid = await this.usersService.validatePassword(password, user.password);
+      const isPasswordValid = await this.usersService.validatePassword(
+        password,
+        user.password,
+      );
       if (!isPasswordValid) {
         return null; // Invalid password
       }

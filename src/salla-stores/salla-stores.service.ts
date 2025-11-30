@@ -8,7 +8,7 @@ export class SallaStoresService {
   constructor(
     @InjectRepository(SallaStore)
     private readonly sallaStoreRepo: Repository<SallaStore>,
-  ) { }
+  ) {}
 
   async create(sallaStoreData: Partial<SallaStore>): Promise<SallaStore> {
     const sallaStore = this.sallaStoreRepo.create(sallaStoreData);
@@ -91,6 +91,4 @@ export class SallaStoresService {
     }
     return null;
   }
-
 }
-

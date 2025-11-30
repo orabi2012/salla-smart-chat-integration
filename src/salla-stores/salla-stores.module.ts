@@ -9,14 +9,28 @@ import { SallaWebhookManagementService } from './salla-webhook-management.servic
 import { SallaStoresController } from './salla-stores.controller';
 import { SallaDevController } from './salla-dev.controller';
 import { SallaWebhookController } from './salla-webhook.controller';
+import { SallaIntegrationService } from './salla-integration.service';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([SallaStore]),
-        ConfigModule,
-    ],
-    controllers: [SallaStoresController, SallaDevController, SallaWebhookController],
-    providers: [SallaStoresService, SallaOAuthService, SallaWebhookService, SallaWebhookManagementService],
-    exports: [SallaStoresService, SallaOAuthService, SallaWebhookService, SallaWebhookManagementService],
+  imports: [TypeOrmModule.forFeature([SallaStore]), ConfigModule],
+  controllers: [
+    SallaStoresController,
+    SallaDevController,
+    SallaWebhookController,
+  ],
+  providers: [
+    SallaStoresService,
+    SallaOAuthService,
+    SallaWebhookService,
+    SallaWebhookManagementService,
+    SallaIntegrationService,
+  ],
+  exports: [
+    SallaStoresService,
+    SallaOAuthService,
+    SallaWebhookService,
+    SallaWebhookManagementService,
+    SallaIntegrationService,
+  ],
 })
-export class SallaStoresModule { }
+export class SallaStoresModule {}

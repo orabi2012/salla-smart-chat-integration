@@ -32,12 +32,13 @@ export interface SallaWebhookResponse {
 @Injectable()
 export class SallaWebhookManagementService {
   private readonly logger = new Logger(SallaWebhookManagementService.name);
-  private readonly SALLA_BASE_URL = process.env.SALLA_BASE_URL || 'https://api.salla.dev/admin/v2';
+  private readonly SALLA_BASE_URL =
+    process.env.SALLA_BASE_URL || 'https://api.salla.dev/admin/v2';
 
   constructor(
     @InjectRepository(SallaStore)
     private readonly sallaStoreRepository: Repository<SallaStore>,
-  ) { }
+  ) {}
 
   /**
    * Register all required webhooks for a store

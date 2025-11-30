@@ -3,7 +3,7 @@ import { StoreController } from './store.controller';
 import { SallaStoresModule } from '../salla-stores/salla-stores.module';
 
 @Module({
-    imports: [SallaStoresModule],
-    controllers: [StoreController],
+  imports: [SallaStoresModule],
+  controllers: [StoreController],
 })
-export class StoreModule { }
+export class StoreModule {}

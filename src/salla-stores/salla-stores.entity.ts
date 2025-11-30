@@ -113,14 +113,20 @@ export class SallaStore {
   @BeforeInsert()
   @BeforeUpdate()
   encryptPassword() {
-    if (this.ubiqfy_password && !this.isPasswordEncrypted(this.ubiqfy_password)) {
+    if (
+      this.ubiqfy_password &&
+      !this.isPasswordEncrypted(this.ubiqfy_password)
+    ) {
       this.ubiqfy_password = this.encryptPasswordStatic(this.ubiqfy_password);
     }
   }
 
   @AfterLoad()
   decryptPassword() {
-    if (this.ubiqfy_password && this.isPasswordEncrypted(this.ubiqfy_password)) {
+    if (
+      this.ubiqfy_password &&
+      this.isPasswordEncrypted(this.ubiqfy_password)
+    ) {
       this.decryptedPassword = this.decryptPasswordStatic(this.ubiqfy_password);
     } else {
       this.decryptedPassword = this.ubiqfy_password;

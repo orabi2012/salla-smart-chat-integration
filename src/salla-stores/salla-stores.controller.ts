@@ -24,7 +24,7 @@ export class SallaStoresController {
   constructor(
     private readonly sallaStoresService: SallaStoresService,
     private readonly sallaWebhookManagementService: SallaWebhookManagementService,
-  ) { }
+  ) {}
 
   private validateUUID(id: string): void {
     if (!isValidUUID(id)) {
@@ -36,7 +36,10 @@ export class SallaStoresController {
   @UseGuards(SuperAdminGuard)
   async create(@Body() createStoreDto: Partial<SallaStore>) {
     if (!createStoreDto.salla_store_id) {
-      throw new HttpException('Salla Store ID is required', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Salla Store ID is required',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const existingStore = await this.sallaStoresService.findBySallaStoreId(
@@ -49,7 +52,10 @@ export class SallaStoresController {
     try {
       return await this.sallaStoresService.create(createStoreDto);
     } catch (error) {
-      throw new HttpException('Failed to create store', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Failed to create store',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -250,6 +256,4 @@ export class SallaStoresController {
       );
     }
   }
-
-}
 }

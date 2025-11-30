@@ -23,4 +23,4 @@ import { UtilsModule } from './utils/utils.module';
   controllers: [AppController],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

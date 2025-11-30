@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   @Get('login')
   @Render('login')
@@ -31,14 +31,17 @@ export class AuthController {
       if (!body.username || !body.password) {
         return res.status(400).json({
           message: 'Username and password are required',
-          field: 'validation'
+          field: 'validation',
         });
       }
 
-      if (body.username.trim().length === 0 || body.password.trim().length === 0) {
+      if (
+        body.username.trim().length === 0 ||
+        body.password.trim().length === 0
+      ) {
         return res.status(400).json({
           message: 'Username and password cannot be empty',
-          field: 'validation'
+          field: 'validation',
         });
       }
 
@@ -49,12 +52,16 @@ export class AuthController {
 
       if (!user) {
         return res.status(401).json({
-          message: 'Invalid username or password. Please check your credentials and try again.',
-          field: 'credentials'
+          message:
+            'Invalid username or password. Please check your credentials and try again.',
+          field: 'credentials',
         });
       }
 
-      const result = await this.authService.login(user, body.rememberMe || false);
+      const result = await this.authService.login(
+        user,
+        body.rememberMe || false,
+      );
 
       // Set cookie for web interface
       const maxAge = body.rememberMe
@@ -73,7 +80,7 @@ export class AuthController {
       console.error('Login error:', error);
       return res.status(500).json({
         message: 'An error occurred during login. Please try again.',
-        field: 'server'
+        field: 'server',
       });
     }
   }

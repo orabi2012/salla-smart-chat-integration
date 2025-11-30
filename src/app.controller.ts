@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Controller()
 export class AppController {
-  constructor() { }
+  constructor() {}
 
   @Get('health')
   getHealthStatus() {

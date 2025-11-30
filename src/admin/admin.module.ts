@@ -4,7 +4,7 @@ import { SallaStoresModule } from '../salla-stores/salla-stores.module';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-    imports: [SallaStoresModule, UsersModule],
-    controllers: [AdminController],
+  imports: [SallaStoresModule, UsersModule],
+  controllers: [AdminController],
 })
-export class AdminModule { }
+export class AdminModule {}

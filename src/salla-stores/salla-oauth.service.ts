@@ -4,13 +4,15 @@ import axios from 'axios';
 
 @Injectable()
 export class SallaOAuthService {
-  private readonly SALLA_AUTH_BASE = process.env.SALLA_AUTH_BASE || 'https://accounts.salla.sa/oauth2';
+  private readonly SALLA_AUTH_BASE =
+    process.env.SALLA_AUTH_BASE || 'https://accounts.salla.sa/oauth2';
   private readonly SALLA_BASE_URL: string;
 
   constructor(private configService: ConfigService) {
     this.SALLA_BASE_URL =
       this.configService.get<string>('SALLA_BASE_URL') ||
-      process.env.SALLA_BASE_URL || 'https://api.salla.dev/admin/v2';
+      process.env.SALLA_BASE_URL ||
+      'https://api.salla.dev/admin/v2';
   }
 
   /**

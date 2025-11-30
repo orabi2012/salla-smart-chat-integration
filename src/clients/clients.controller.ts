@@ -21,9 +21,7 @@ import { SallaStore } from '../salla-stores/salla-stores.entity';
 @Controller('clients')
 @UseGuards(AuthGuard('jwt'))
 export class ClientsController {
-  constructor(
-    private readonly sallaStoresService: SallaStoresService,
-  ) { }
+  constructor(private readonly sallaStoresService: SallaStoresService) {}
 
   @Get()
   @UseGuards(SuperAdminGuard)
@@ -116,16 +114,19 @@ export class ClientsController {
 
   @Post('edit/:id')
   @UseGuards(StoreAccessGuard)
-  async editClient(@Param('id') id: string, @Body() body: any, @Res() res, @Request() req) {
+  async editClient(
+    @Param('id') id: string,
+    @Body() body: any,
+    @Res() res,
+    @Request() req,
+  ) {
     try {
-
-
       // Define protected fields that only superadmins can modify
       const protectedFields = [
         'salla_store_id',
         'salla_store_name',
         'ubiqfy_producttypecode',
-        'sku_prefix'
+        'sku_prefix',
       ];
 
       // Handle toggle switches - they send 'true' when on, nothing when off
@@ -177,17 +178,21 @@ export class ClientsController {
     try {
       const updatedStore = await this.sallaStoresService.toggleActive(id);
       if (!updatedStore) {
-        return res.status(404).json({ success: false, error: 'Store not found' });
+        return res
+          .status(404)
+          .json({ success: false, error: 'Store not found' });
       }
       const action = updatedStore.is_active ? 'activated' : 'deactivated';
       return res.json({
         success: true,
         message: `Store ${action} successfully`,
-        isActive: updatedStore.is_active
+        isActive: updatedStore.is_active,
       });
     } catch (error) {
       console.error('Error toggling store status:', error);
-      return res.status(500).json({ success: false, error: 'Failed to update store status' });
+      return res
+        .status(500)
+        .json({ success: false, error: 'Failed to update store status' });
     }
   }
 }

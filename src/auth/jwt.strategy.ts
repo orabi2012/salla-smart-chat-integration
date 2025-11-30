@@ -25,7 +25,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     // If assignedStoreId is missing from token (old token), fetch from database
     if (payload.assignedStoreId === undefined) {
-      console.log('JWT - assignedStoreId missing from token, fetching from database');
+      console.log(
+        'JWT - assignedStoreId missing from token, fetching from database',
+      );
       const user = await this.usersService.findByUsername(payload.username);
       if (user) {
         return {

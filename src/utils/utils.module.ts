@@ -5,10 +5,8 @@ import { PasswordMigrationService } from './password-migration.service';
 import { SallaStore } from '../salla-stores/salla-stores.entity';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([SallaStore])
-    ],
-    providers: [PasswordService, PasswordMigrationService],
-    exports: [PasswordService, PasswordMigrationService],
+  imports: [TypeOrmModule.forFeature([SallaStore])],
+  providers: [PasswordService, PasswordMigrationService],
+  exports: [PasswordService, PasswordMigrationService],
 })
-export class UtilsModule { }
+export class UtilsModule {}

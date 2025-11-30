@@ -11,7 +11,7 @@ export class UsersService implements OnModuleInit {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-  ) { }
+  ) {}
 
   async onModuleInit() {
     const superadminExists = await this.userRepo.findOne({
@@ -52,14 +52,14 @@ export class UsersService implements OnModuleInit {
   async findByUsername(username: string): Promise<User | null> {
     return await this.userRepo.findOne({
       where: { username },
-      relations: ['assignedStore']
+      relations: ['assignedStore'],
     });
   }
 
   async findAll(): Promise<User[]> {
     return await this.userRepo.find({
       relations: ['assignedStore'],
-      order: { username: 'ASC' }
+      order: { username: 'ASC' },
     });
   }
 
@@ -78,16 +78,19 @@ export class UsersService implements OnModuleInit {
     return await this.userRepo.save(user);
   }
 
-  async updateUser(id: string, userData: {
-    username?: string;
-    password?: string;
-    assignedStoreId?: string;
-    isActive?: boolean;
-  }): Promise<User | null> {
+  async updateUser(
+    id: string,
+    userData: {
+      username?: string;
+      password?: string;
+      assignedStoreId?: string;
+      isActive?: boolean;
+    },
+  ): Promise<User | null> {
     // Find the existing user
     const existingUser = await this.userRepo.findOne({
       where: { id },
-      relations: ['assignedStore']
+      relations: ['assignedStore'],
     });
 
     if (!existingUser) {
@@ -121,7 +124,7 @@ export class UsersService implements OnModuleInit {
   async toggleUserStatus(id: string): Promise<User | null> {
     const user = await this.userRepo.findOne({
       where: { id },
-      relations: ['assignedStore']
+      relations: ['assignedStore'],
     });
 
     if (!user) {
@@ -136,15 +139,19 @@ export class UsersService implements OnModuleInit {
   async findById(id: string): Promise<User | null> {
     return await this.userRepo.findOne({
       where: { id },
-      relations: ['assignedStore']
+      relations: ['assignedStore'],
     });
   }
 
-  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<{ success: boolean; message: string }> {
     try {
       // Find the user
       const user = await this.userRepo.findOne({
-        where: { id: userId }
+        where: { id: userId },
       });
 
       if (!user) {
@@ -152,7 +159,10 @@ export class UsersService implements OnModuleInit {
       }
 
       // Verify current password
-      const isCurrentPasswordValid = await this.validatePassword(currentPassword, user.password);
+      const isCurrentPasswordValid = await this.validatePassword(
+        currentPassword,
+        user.password,
+      );
       if (!isCurrentPasswordValid) {
         return { success: false, message: 'Current password is incorrect.' };
       }
@@ -164,7 +174,10 @@ export class UsersService implements OnModuleInit {
       return { success: true, message: 'Password changed successfully.' };
     } catch (error) {
       console.error('Error changing password:', error);
-      return { success: false, message: 'An error occurred while changing password.' };
+      return {
+        success: false,
+        message: 'An error occurred while changing password.',
+      };
     }
   }
 }

@@ -6,4 +6,4 @@ import { SallaStoresModule } from '../salla-stores/salla-stores.module';
   imports: [SallaStoresModule],
   controllers: [ClientsController],
 })
-export class ClientsModule { }
+export class ClientsModule {}

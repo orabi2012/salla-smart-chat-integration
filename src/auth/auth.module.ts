@@ -33,4 +33,4 @@ import { SallaStoresModule } from '../salla-stores/salla-stores.module';
   ],
   exports: [AuthService, SuperAdminGuard, StoreAccessGuard],
 })
-export class AuthModule { }
+export class AuthModule {}
