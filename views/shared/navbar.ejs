@@ -1,0 +1,49 @@
+<!-- Shared Top Navigation Bar Component -->
+
+<nav class="navbar navbar-expand-lg navbar-dark top-navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand"
+            href="<%= (typeof user !== 'undefined' && user && user.isSuperadmin) ? '/clients' : '/' %>">
+            <img src="/images/ubiqfy_logo.jpg" alt="Ubiqfy" height="32" class="me-2">
+            <span>
+                <%= typeof pageTitle !=='undefined' ? pageTitle : 'Salla Integration' %>
+            </span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="navbar-nav ms-auto d-flex flex-row align-items-center">
+                <% if (typeof user !=='undefined' && user) { %>
+                    <div class="dropdown">
+                        <span class="navbar-text user-info dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false" role="button">
+                            <i
+                                class="<%= (typeof user !== 'undefined' && user && user.isSuperadmin) ? 'fas fa-user-shield' : 'fas fa-user' %>"></i>
+                            <span class="fw-semibold">
+                                <%= user.username %>
+                            </span>
+                        </span>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/users/change-password">
+                                    <i class="fas fa-key"></i> Change Password
+                                </a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/auth/logout">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a></li>
+                        </ul>
+                    </div>
+                    <% } %>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Bootstrap Dropdown Initialization Script -->
+<script src="/js/navbar.js"></script>

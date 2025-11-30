@@ -1,0 +1,784 @@
+/* Styles specific to the edit client page */
+
+/* Reduce excessive whitespace and better utilize screen width */
+.container,
+.container-fluid {
+    min-height: auto !important;
+    max-width: none !important;
+}
+
+/* Better horizontal space utilization */
+.container-fluid {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+@media (min-width: 1200px) {
+    .col-xl-10 {
+        max-width: 95% !important;
+    }
+}
+
+/* Compact layout for edit page */
+.mt-4 {
+    margin-top: 1.5rem !important;
+    /* Reduced from default 3rem */
+}
+
+/* Enhanced Pricing Controls Styling */
+.pricing-control-item {
+    transition: all 0.2s ease-in-out;
+}
+
+.pricing-control-item:hover {
+    transform: translateY(-1px);
+}
+
+.pricing-control-item .input-group {
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.pricing-control-item .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15) !important;
+    transform: scale(1.02);
+}
+
+.pricing-control-item .form-control:focus {
+    border-color: #0d6efd !important;
+    box-shadow: none !important;
+}
+
+/* Negative markup visual indicator */
+.markup-input.border-danger {
+    background-color: #fff5f5 !important;
+    border-color: #dc3545 !important;
+}
+
+.markup-input.border-danger:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+/* Positive markup visual indicator */
+.markup-input.border-warning {
+    border-color: #ffc107 !important;
+}
+
+.markup-input.border-warning:focus {
+    border-color: #ffc107 !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important;
+}
+
+/* Zero/default markup visual indicator */
+.markup-input.border-success {
+    border-color: #198754 !important;
+}
+
+.markup-input.border-success:focus {
+    border-color: #198754 !important;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25) !important;
+}
+
+/* Synced and Stored Product Visual Indicators */
+.product-synced {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+    border: 2px solid #28a745 !important;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2) !important;
+}
+
+.product-stored {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%) !important;
+    border: 2px solid #ffc107 !important;
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.2) !important;
+}
+
+.status-badge {
+    font-size: 0.75rem !important;
+    padding: 0.35em 0.6em !important;
+    border-radius: 0.375rem !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.product-synced .status-badge.bg-success {
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+.product-stored .status-badge.bg-warning {
+    background-color: #f57c00 !important;
+    color: white !important;
+}
+
+/* Animation for newly marked products */
+.newly-marked {
+    animation: markProduct 0.6s ease-in-out;
+}
+
+@keyframes markProduct {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.02);
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.pricing-control-item .input-group-text {
+    transition: all 0.2s ease-in-out;
+}
+
+.pricing-control-item .input-group:focus-within .input-group-text {
+    border-color: #0d6efd !important;
+    background-color: #e7f1ff !important;
+}
+
+/* Final price badge enhancement */
+.pricing-control-item span[class*="border-success"] {
+    transition: all 0.2s ease-in-out;
+    font-weight: 600 !important;
+}
+
+.pricing-control-item span[class*="border-success"]:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.2) !important;
+}
+
+/* Responsive adjustments for pricing controls */
+@media (max-width: 768px) {
+    .pricing-control-item {
+        flex-direction: column;
+        align-items: flex-start !important;
+        margin-bottom: 1rem;
+    }
+
+    .pricing-control-item label {
+        margin-bottom: 0.5rem !important;
+        min-width: auto !important;
+    }
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+    /* Reduced from default 3rem */
+}
+
+/* Badge styles for better visibility - edit page specific overrides */
+.synced-badge {
+    background-color: #0d6efd !important;
+    font-size: 1rem !important;
+    padding: 8px 16px !important;
+}
+
+.saved-badge {
+    background-color: #198754 !important;
+}
+
+/* Enhanced option card styling */
+.option-card {
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 2px solid #e9ecef !important;
+    border-left: 5px solid #e9ecef !important;
+    position: relative;
+    overflow: visible !important;
+    /* Changed from hidden to visible */
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 12px !important;
+    min-height: auto !important;
+    /* Ensure no fixed height constraints */
+    height: auto !important;
+    /* Allow natural content height */
+}
+
+/* Top-left checkbox styling */
+.option-card .form-check {
+    margin-bottom: 0.75rem;
+    padding-left: 0;
+}
+
+.option-card .form-check .form-check-input {
+    margin-left: 0;
+    margin-right: 0.5rem;
+    transform: scale(1.2);
+}
+
+.option-card .form-check .form-check-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #28a745;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.option-card .form-check .form-check-label:hover {
+    color: #20c997;
+}
+
+.option-card .form-check-input:checked+.form-check-label {
+    color: #28a745;
+}
+
+/* Modern selected option card styling */
+.option-card.border-success {
+    border: 2px solid #28a745 !important;
+    border-left: 5px solid #28a745 !important;
+    background: linear-gradient(135deg, #f8fff8 0%, #f0fff0 100%) !important;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.15) !important;
+}
+
+/* Enhanced selection indicator */
+.option-card.border-success::before {
+    content: "✓";
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 15;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    animation: checkmarkPop 0.3s ease-out;
+}
+
+@keyframes checkmarkPop {
+    0% {
+        transform: scale(0) rotate(180deg);
+    }
+
+    50% {
+        transform: scale(1.2) rotate(90deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* Enhanced hover effects */
+.option-card:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+    border-left-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.option-card.border-success:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(40, 167, 69, 0.2) !important;
+}
+
+/* Enhanced product card styling when selected */
+.card.border-primary {
+    border-width: 2px !important;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e6f3ff 100%) !important;
+}
+
+/* Modern pricing section */
+.pricing-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 10px;
+    padding: 18px;
+    border: 1px solid #e9ecef;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    min-height: auto !important;
+    /* Remove any height constraints */
+    height: auto !important;
+    /* Allow natural content expansion */
+    overflow: visible !important;
+    /* Ensure content is not clipped */
+}
+
+.pricing-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #28a745, #20c997, #17a2b8);
+    border-radius: 10px 10px 0 0;
+}
+
+.pricing-section h6 {
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Enhanced badge styling */
+.option-card .badge {
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+}
+
+.option-card .badge.bg-info {
+    background: linear-gradient(135deg, #17a2b8, #138496) !important;
+    color: white;
+    box-shadow: 0 2px 4px rgba(23, 162, 184, 0.2);
+}
+
+.option-card .badge.bg-secondary {
+    background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+    color: white;
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.2);
+}
+
+.option-card .badge.bg-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+/* Enhanced price displays */
+.final-price-display {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #28a745 !important;
+    text-shadow: 0 1px 2px rgba(40, 167, 69, 0.1);
+}
+
+.custom-price-input:focus,
+.markup-input:focus {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.15) !important;
+}
+
+/* Enhanced form controls */
+.option-card .form-control {
+    border-radius: 8px;
+    border: 1.5px solid #dee2e6;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.option-card .form-control:focus {
+    transform: scale(1.02);
+}
+
+.option-card .form-control.border-success {
+    border-color: #28a745 !important;
+    background-color: #f8fff8;
+}
+
+.sync-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 1px solid #dee2e6;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.currency-conversion-info {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: 1px solid #90caf9;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 12px;
+    font-size: 0.85em;
+}
+
+/* Product card enhancements */
+.product-checkbox:checked+label {
+    color: #007bff !important;
+    font-weight: bold !important;
+}
+
+/* Option count badge */
+.options-count-badge {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    font-weight: bold;
+    border: none;
+}
+
+/* Enhanced existing product in database styling */
+.option-card.exists-in-db {
+    background: linear-gradient(135deg, #f0fff4, #e8f8e8) !important;
+    border: 2px solid #c3e6cb !important;
+    border-left: 5px solid #28a745 !important;
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.15) !important;
+    position: relative;
+}
+
+.option-card.exists-in-db::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 49%, rgba(40, 167, 69, 0.05) 51%);
+    pointer-events: none;
+    border-radius: 12px;
+}
+
+.option-card.exists-in-db .pricing-section {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 255, 248, 0.9));
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+    z-index: 5;
+}
+
+.exists-in-db-badge {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    color: white;
+    font-weight: 700;
+    border: none;
+    animation: pulse 2s infinite;
+    font-size: 0.7em;
+    padding: 6px 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Enhanced button states - edit page specific */
+.btn-primary:not(:disabled):hover {
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Loading state animation override for edit page */
+.btn.loading::after {
+    margin: -10px 0 0 -10px;
+    width: 20px;
+    height: 20px;
+    border-top-color: currentColor;
+}
+
+/* Enhanced selection counters */
+#selectAllProductsCheckbox {
+    transform: scale(1.2);
+    margin-right: 0.5rem;
+}
+
+#selectAllProductsCheckbox:indeterminate {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.form-check-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+#selectedCountBadge {
+    transition: all 0.3s ease;
+    border-radius: 20px !important;
+    font-size: 0.85em;
+}
+
+#selectedCountBadge.bg-success {
+    animation: pulse 2s infinite;
+}
+
+/* Better responsive design */
+@media (max-width: 768px) {
+    .btn-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-group {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .option-card {
+        margin-bottom: 20px;
+        padding: 16px !important;
+        min-height: auto !important;
+        /* Remove height constraints on mobile */
+        height: auto !important;
+        /* Allow natural expansion */
+    }
+
+    .pricing-section {
+        padding: 14px;
+        min-height: auto !important;
+        height: auto !important;
+    }
+
+    .option-card .row.g-3 {
+        gap: 0.75rem !important;
+    }
+
+    .final-price-display {
+        font-size: 1rem !important;
+    }
+
+    .option-card h6 {
+        font-size: 0.95rem;
+    }
+
+    .form-check-label {
+        font-size: 0.85rem;
+    }
+}
+
+/* Enhanced content visibility */
+.option-card .row {
+    min-height: auto !important;
+}
+
+.option-card .col-md-6,
+.option-card .col-md-8,
+.option-card .col-md-4,
+.option-card .col-sm-6,
+.option-card .col-sm-7,
+.option-card .col-sm-5 {
+    min-height: auto !important;
+    height: auto !important;
+}
+
+/* Ensure all text content is visible */
+.option-card .text-primary,
+.option-card .text-muted,
+.option-card .badge,
+.option-card .form-label,
+.option-card .final-price-display {
+    line-height: 1.5 !important;
+    word-wrap: break-word;
+}
+
+/* Fix any container height issues */
+.option-card .d-flex {
+    align-items: flex-start !important;
+    /* Changed from center to start for better content flow */
+    min-height: auto !important;
+}
+
+/* Enhanced micro-interactions */
+.option-card .form-check-input[type="checkbox"] {
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 0.375em;
+    transition: all 0.2s ease;
+    border: 2px solid #dee2e6;
+}
+
+.option-card .form-check-input[type="checkbox"]:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+    transform: scale(1.1);
+}
+
+.option-card .form-check-input[type="checkbox"]:focus {
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.15);
+}
+
+/* Enhanced input group styling */
+.input-group-text {
+    border: 1.5px solid #dee2e6;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    font-weight: 500;
+}
+
+.option-card .input-group .form-control:focus+.input-group-text,
+.option-card .input-group-text+.form-control:focus {
+    border-color: #28a745 !important;
+}
+
+/* Badge hover effects */
+.option-card .badge {
+    transition: all 0.2s ease;
+}
+
+.option-card .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced status indicators */
+.sync-status {
+    transition: all 0.2s ease;
+}
+
+.option-card:hover .sync-status {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border-color: #90caf9;
+    transform: scale(1.05);
+}
+
+/* Additional fixes for content visibility */
+.option-card * {
+    box-sizing: border-box;
+}
+
+/* Ensure no truncation of content */
+.option-card .pricing-section h6,
+.option-card .form-label,
+.option-card .badge,
+.option-card small {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: none !important;
+}
+
+/* Fix specific height issues that might be inherited */
+.option-card .input-group,
+.option-card .form-control,
+.option-card .input-group-text {
+    height: auto !important;
+    min-height: 38px;
+    /* Comfortable minimum for inputs */
+}
+
+/* Ensure grid system doesn't constrain height */
+.option-card .row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0.75rem;
+    min-height: auto !important;
+    height: auto !important;
+}
+
+/* Ensure product container allows natural expansion */
+#productsContainer {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+}
+
+#productsContainer .row {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+#productsContainer .col-12 {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+/* Search and Filter Styles */
+.input-group .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.input-group .btn-outline-secondary {
+    border-left: none;
+    border-color: #ced4da;
+}
+
+.input-group .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+/* No products message */
+#noProductsMessage {
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 1rem;
+    border: 2px dashed #dee2e6;
+}
+
+#noProductsMessage .fa-search {
+    color: #6c757d;
+    opacity: 0.7;
+}
+
+/* Progress section styling */
+#progressSection {
+    border: none;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+#progressSection .card-body {
+    padding: 1.5rem;
+}
+
+.progress {
+    height: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #28a745, #20c997, #17a2b8);
+    transition: width 0.3s ease;
+    border-radius: 0.75rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: progressShine 1.5s infinite;
+}
+
+@keyframes progressShine {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+/* Sort select styling */
+.form-select-sm {
+    transition: all 0.2s ease;
+}
+
+.form-select-sm:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Animation for filtered products */
+.col-12.mb-4 {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.col-12.mb-4[style*="none"] {
+    opacity: 0;
+    transform: scale(0.95);
+}

@@ -1,0 +1,25 @@
+/* Modern Navigation Styles */
+.modern-nav .nav-link {
+    transition: all 0.3s ease;
+    border-radius: 0.375rem !important;
+    margin: 0.2rem;
+}
+
+.modern-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Unified active state for all navigation items */
+.modern-nav .nav-link.active {
+    background: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2) !important;
+    font-weight: 600;
+}
+
+.modern-nav {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-radius: 0.375rem;
+    padding: 0.3rem;
+}

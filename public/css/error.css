@@ -1,0 +1,44 @@
+/* Error Page Specific Styles */
+.error-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.error-card {
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: #ffc107;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.error-title {
+    color: #dc3545;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    color: #6c757d;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}

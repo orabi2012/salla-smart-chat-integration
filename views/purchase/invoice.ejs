@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/purchases.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-4">
+        <!-- Navigation -->
+        <div class="row no-print mb-3">
+            <div class="col-6">
+                <a href="/store/<%= storeId %>/purchase-orders" class="btn btn-secondary">
+                    ← Back to Orders
+                </a>
+            </div>
+            <div class="col-6 text-end">
+                <button onclick="window.print()" class="btn btn-primary">
+                    Print Invoice
+                </button>
+            </div>
+        </div>
+
+        <!-- Invoice Content -->
+        <div class="invoice-content">
+            <!-- Simple Header -->
+            <div class="invoice-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <img src="/images/ubiqfy_logo.jpg" alt="Ubiqfy" class="company-logo mb-2">
+                        <h3>Voucher Purchase Invoice</h3>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <h2>INVOICE</h2>
+                        <p><strong>Order #:</strong>
+                            <%= order.purchase_order_number %>
+                        </p>
+                        <p><strong>Date:</strong>
+                            <%= new Date().toLocaleDateString() %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="row mb-4">
+                <div class="col-md-4 text-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="text-success">
+                                <%= totals.totalCount %>
+                            </h4>
+                            <p class="mb-0">Successful Vouchers</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="text-primary">$<%= totals.totalAmount.toFixed(2) %>
+                            </h4>
+                            <p class="mb-0">Total Amount</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="text-info">
+                                <%= totals.totalCount> 0 ? Math.round((totals.totalCount / totals.originalCount) * 100)
+                                    : 0 %>%
+                            </h4>
+                            <p class="mb-0">Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simple Voucher Details Table -->
+            <h4>Successful Vouchers</h4>
+
+            <% if (successfulVouchers.length===0) { %>
+                <div class="alert alert-warning text-center">
+                    <h5>No Successful Vouchers Found</h5>
+                    <p>This order had no successfully processed vouchers.</p>
+                </div>
+                <% } else { %>
+                    <!-- Render grouped vouchers -->
+                    <% Object.keys(groupedVouchers).forEach((productName)=> { %>
+                        <% const group=groupedVouchers[productName]; %>
+
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h5 class="mb-0">📦 <%= productName %>
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <strong>
+                                                <%= group.count %> voucher<%= group.count !==1 ? 's' : '' %> • $<%=
+                                                            group.totalAmount.toFixed(2) %>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-striped mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th width="8%">#</th>
+                                                <th width="20%">External ID</th>
+                                                <th width="12%">Amount</th>
+                                                <th width="18%">Serial Number</th>
+                                                <th width="18%">Transaction ID</th>
+                                                <th width="14%">Reference</th>
+                                                <th width="10%">Option Code</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% group.vouchers.forEach((voucher)=> { %>
+                                                <tr>
+                                                    <td>
+                                                        <%= voucher.globalIndex %>
+                                                    </td>
+                                                    <td><code><%= voucher.external_id || 'N/A' %></code></td>
+                                                    <td><strong>$<%= (parseFloat(voucher.amount_wholesale) ||
+                                                                0).toFixed(2) %></strong></td>
+                                                    <td>
+                                                        <% if (voucher.serial_number) { %>
+                                                            <code><%= voucher.serial_number %></code>
+                                                            <% } else { %>
+                                                                <span class="text-muted">N/A</span>
+                                                                <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (voucher.transaction_id) { %>
+                                                            <code><%= voucher.transaction_id %></code>
+                                                            <% } else { %>
+                                                                <span class="text-muted">N/A</span>
+                                                                <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (voucher.reference) { %>
+                                                            <%= voucher.reference %>
+                                                                <% } else { %>
+                                                                    <span class="text-muted">N/A</span>
+                                                                    <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (voucher.purchaseItem?.product_option_code) { %>
+                                                            <code><%= voucher.purchaseItem.product_option_code %></code>
+                                                            <% } else { %>
+                                                                <span class="text-muted">N/A</span>
+                                                                <% } %>
+                                                    </td>
+                                                </tr>
+                                                <% }); %>
+                                        </tbody>
+                                        <tfoot class="table-info">
+                                            <tr>
+                                                <th>Subtotal:</th>
+                                                <th colspan="2"><strong>$<%= group.totalAmount.toFixed(2) %>
+                                                    </strong></th>
+                                                <th colspan="4">
+                                                    <%= group.count %> voucher<%= group.count !==1 ? 's' : '' %>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <% }); %>
+
+                                <!-- Grand Total -->
+                                <div class="card">
+                                    <div class="card-body bg-success text-white">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6">
+                                                <h5 class="mb-0">Grand Total</h5>
+                                            </div>
+                                            <div class="col-md-6 text-end">
+                                                <h4 class="mb-0">$<%= totals.totalAmount.toFixed(2) %>
+                                                </h4>
+                                                <small>
+                                                    <%= totals.totalCount %> total voucher<%= totals.totalCount !==1
+                                                            ? 's' : '' %>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %> <!-- Simple Footer -->
+                                    <div class="mt-4 pt-3 border-top text-center text-muted">
+                                        <p>Generated on <%= new Date().toLocaleString() %> | Salla-Ubiqfy
+                                                Integration</p>
+                                    </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

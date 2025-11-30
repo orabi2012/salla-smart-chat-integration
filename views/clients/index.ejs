@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/common.css" rel="stylesheet">
+    <link href="/css/edit-page.css" rel="stylesheet">
+    <link href="/css/navbar.css" rel="stylesheet">
+    <link href="/css/clients.css" rel="stylesheet">
+</head>
+
+<body>
+    <% const pageTitle="Store Management" %>
+        <%- include('../shared/navbar') %>
+
+            <div class="container-fluid mt-2 px-3">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Breadcrumb Navigation -->
+                        <nav aria-label="breadcrumb" class="mb-3">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Store Management</li>
+                            </ol>
+                        </nav>
+
+                        <!-- Modern Navigation Bar -->
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-body p-0">
+                                <div class="bg-gradient-primary text-white p-3 rounded-top">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h4 class="mb-0">
+                                                <i class="fas fa-store me-2"></i>
+                                                Store Management
+                                            </h4>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="/clients/add" class="btn btn-light btn-sm">
+                                                <i class="fas fa-plus me-1"></i>
+                                                Add Store
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <nav class="nav nav-pills nav-fill modern-nav">
+                                    <a href="/clients"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3 active"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Manage Salla stores">
+                                        <i class="fas fa-store fa-lg me-2"></i>
+                                        <span class="fw-semibold">Stores</span>
+                                    </a>
+                                    <a href="/users"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Manage users">
+                                        <i class="fas fa-users fa-lg me-2"></i>
+                                        <span class="fw-semibold">Users</span>
+                                    </a>
+                                    <a href="/purchase-orders"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Manage purchase orders">
+                                        <i class="fas fa-shopping-cart fa-lg me-2"></i>
+                                        <span class="fw-semibold">Purchase Orders</span>
+                                    </a>
+                                    <a href="/users/change-password"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Change your password">
+                                        <i class="fas fa-key fa-lg me-2"></i>
+                                        <span class="fw-semibold">Change Password</span>
+                                    </a>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <!-- Success/Error Messages -->
+                        <% if (typeof query !=='undefined' ) { %>
+                            <% if (query.success) { %>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    <% if (query.success==='store_added' ) { %>Store added successfully!<% } %>
+                                            <% if (query.success==='store_updated' ) { %>Store updated successfully!<% }
+                                                    %>
+                                                    <% if (query.success==='store_toggled' ) { %>Store status toggled
+                                                        successfully!<% } %>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="alert"></button>
+                                </div>
+                                <% } %>
+
+                                    <% if (query.error) { %>
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <% if (query.error==='store_not_found' ) { %>Store not found!<% } %>
+                                                    <% if (query.error==='failed_to_add' ) { %>Failed to add store!<% }
+                                                            %>
+                                                            <% if (query.error==='failed_to_update' ) { %>Failed to
+                                                                update
+                                                                store!<% } %>
+                                                                    <% if (query.error==='failed_to_toggle' ) { %>Failed
+                                                                        to toggle store status!<% } %>
+                                                                            <button type="button" class="btn-close"
+                                                                                data-bs-dismiss="alert"></button>
+                                        </div>
+                                        <% } %>
+                                            <% } %>
+
+                                                <div class="card store-card">
+                                                    <div class="card-body">
+                                                        <% if (stores.length===0) { %>
+                                                            <div class="text-center py-5">
+                                                                <div class="mb-4">
+                                                                    <i class="fas fa-store text-primary"
+                                                                        style="font-size: 4rem; opacity: 0.3;"></i>
+                                                                </div>
+                                                                <h4 class="text-muted">No Stores Found</h4>
+                                                                <p class="text-muted">Start by adding your first Salla
+                                                                    store to
+                                                                    the system</p>
+                                                                <a href="/clients/add"
+                                                                    class="btn btn-gradient btn-primary px-4 py-2">
+                                                                    <i class="fas fa-plus"></i> Add Your First Store
+                                                                </a>
+                                                            </div>
+                                                            <% } else { %>
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-hover">
+                                                                        <thead class="table-light">
+                                                                            <tr>
+                                                                                <th>
+                                                                                    <i
+                                                                                        class="fas fa-store me-2 text-primary"></i>
+                                                                                    Store Details
+                                                                                </th>
+                                                                                <th>
+                                                                                    <i
+                                                                                        class="fas fa-user me-2 text-primary"></i>
+                                                                                    Owner
+                                                                                </th>
+                                                                                <th>
+                                                                                    <i
+                                                                                        class="fas fa-envelope me-2 text-primary"></i>
+                                                                                    Contact
+                                                                                </th>
+                                                                                <th>
+                                                                                    <i
+                                                                                        class="fas fa-coins me-2 text-primary"></i>
+                                                                                    Currency & Balance
+                                                                                </th>
+                                                                                <th>
+                                                                                    <i
+                                                                                        class="fas fa-toggle-on me-2 text-primary"></i>
+                                                                                    Status
+                                                                                </th>
+                                                                                <th>
+                                                                                    <i
+                                                                                        class="fas fa-sync me-2 text-primary"></i>
+                                                                                    Sync Status
+                                                                                </th>
+                                                                                <th>
+                                                                                    <i
+                                                                                        class="fas fa-box me-2 text-primary"></i>
+                                                                                    Products
+                                                                                </th>
+                                                                                <th>
+                                                                                    <i
+                                                                                        class="fas fa-cogs me-2 text-primary"></i>
+                                                                                    Actions
+                                                                                </th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <% stores.forEach(store=> { %>
+                                                                                <tr style="transition: all 0.3s ease;">
+                                                                                    <td>
+                                                                                        <div
+                                                                                            class="d-flex align-items-center">
+                                                                                            <div class="store-avatar">
+                                                                                                <%= store.salla_store_name.charAt(0).toUpperCase()
+                                                                                                    %>
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <div
+                                                                                                    class="fw-semibold">
+                                                                                                    <%= store.salla_store_name
+                                                                                                        %>
+                                                                                                </div>
+                                                                                                <small
+                                                                                                    class="text-muted">
+                                                                                                    ID: <%=
+                                                                                                        store.salla_store_id
+                                                                                                        %>
+                                                                                                </small>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="fw-semibold">
+                                                                                            <%= store.salla_owner_name
+                                                                                                %>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="fw-semibold">
+                                                                                            <%= store.salla_owner_email
+                                                                                                %>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="fw-semibold mb-1">
+                                                                                            <%= store.salla_currency %>
+                                                                                        </div>
+                                                                                        <% if (store.ubiqfy_plafond
+                                                                                            !==null &&
+                                                                                            store.ubiqfy_plafond
+                                                                                            !==undefined) { %>
+                                                                                            <span
+                                                                                                class="badge bg-success p-2">
+                                                                                                <i
+                                                                                                    class="fas fa-coins"></i>
+                                                                                                <%= parseInt(store.ubiqfy_plafond)
+                                                                                                    %>¢
+                                                                                            </span>
+                                                                                            <% } else { %>
+                                                                                                <span
+                                                                                                    class="badge bg-secondary p-2">
+                                                                                                    <i
+                                                                                                        class="fas fa-question"></i>
+                                                                                                    N/A
+                                                                                                </span>
+                                                                                                <% } %>
+                                                                                                    <br><small
+                                                                                                        class="text-muted">
+                                                                                                        SKU: <%=
+                                                                                                            store.sku_prefix
+                                                                                                            || 'UBQ' %>
+                                                                                                            -*
+                                                                                                    </small>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <% if (store.is_active) { %>
+                                                                                            <span
+                                                                                                class="badge status-active p-2">Active</span>
+                                                                                            <% } else { %>
+                                                                                                <span
+                                                                                                    class="badge status-inactive p-2">Inactive</span>
+                                                                                                <% } %>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <% if
+                                                                                            (store.sync_status==='success'
+                                                                                            ) { %>
+                                                                                            <span
+                                                                                                class="badge sync-status-success p-2">Success</span>
+                                                                                            <% } else if
+                                                                                                (store.sync_status==='failed'
+                                                                                                ) { %>
+                                                                                                <span
+                                                                                                    class="badge sync-status-failed p-2">Failed</span>
+                                                                                                <% } else if
+                                                                                                    (store.sync_status==='syncing'
+                                                                                                    ) { %>
+                                                                                                    <span
+                                                                                                        class="badge sync-status-syncing p-2">Syncing</span>
+                                                                                                    <% } else { %>
+                                                                                                        <span
+                                                                                                            class="badge sync-status-pending p-2">Pending</span>
+                                                                                                        <% } %>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <span class="badge bg-info p-2">
+                                                                                            <i
+                                                                                                class="fas fa-box me-1"></i>
+                                                                                            <%= store.total_products_synced
+                                                                                                %>
+                                                                                        </span>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="action-buttons"
+                                                                                            role="group">
+                                                                                            <a href="/clients/edit/<%= store.id %>"
+                                                                                                class="btn btn-sm btn-outline-primary"
+                                                                                                data-bs-toggle="tooltip"
+                                                                                                data-bs-placement="top"
+                                                                                                title="Edit Store">
+                                                                                                <i
+                                                                                                    class="fas fa-edit"></i>
+                                                                                            </a>
+                                                                                            <a href="/clients/stock/<%= store.id %>"
+                                                                                                class="btn btn-sm btn-outline-success"
+                                                                                                data-bs-toggle="tooltip"
+                                                                                                data-bs-placement="top"
+                                                                                                title="Stock Management">
+                                                                                                <i
+                                                                                                    class="fas fa-boxes"></i>
+                                                                                            </a>
+                                                                                            <% if (user.isSuperadmin) {
+                                                                                                %>
+                                                                                                <% if (store.is_active)
+                                                                                                    { %>
+                                                                                                    <button
+                                                                                                        type="button"
+                                                                                                        class="btn btn-outline-warning btn-sm"
+                                                                                                        onclick="toggleStoreStatus('<%= store.id %>', '<%= store.salla_store_name %>', false)"
+                                                                                                        data-bs-toggle="tooltip"
+                                                                                                        data-bs-placement="top"
+                                                                                                        title="Deactivate store">
+                                                                                                        <i
+                                                                                                            class="fas fa-pause"></i>
+                                                                                                    </button>
+                                                                                                    <% } else { %>
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            class="btn btn-outline-success btn-sm"
+                                                                                                            onclick="toggleStoreStatus('<%= store.id %>', '<%= store.salla_store_name %>', true)"
+                                                                                                            data-bs-toggle="tooltip"
+                                                                                                            data-bs-placement="top"
+                                                                                                            title="Activate store">
+                                                                                                            <i
+                                                                                                                class="fas fa-play"></i>
+                                                                                                        </button>
+                                                                                                        <% } %>
+                                                                                                            <% } else {
+                                                                                                                %>
+                                                                                                                <span
+                                                                                                                    class="badge bg-info p-2">
+                                                                                                                    <i
+                                                                                                                        class="fas fa-lock me-1"></i>
+                                                                                                                    Contact
+                                                                                                                    Admin
+                                                                                                                </span>
+                                                                                                                <% } %>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <% }) %>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <% } %>
+                                                    </div>
+                                                </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Status Toggle Modal -->
+            <div class="modal fade" id="storeStatusModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning text-dark">
+                            <h5 class="modal-title" id="storeStatusModalTitle">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Confirm Store Status Change
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-store fa-2x text-primary me-3"></i>
+                                <div>
+                                    <h6 class="mb-1" id="storeStatusModalStoreName">Store Name</h6>
+                                    <small class="text-muted">Change store status</small>
+                                </div>
+                            </div>
+                            <p id="storeStatusModalMessage" class="mb-0">
+                                Are you sure you want to change this store's status?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </button>
+                            <button type="button" class="btn btn-warning" id="confirmStoreStatusBtn">
+                                <i class="fas fa-check me-1"></i>Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Container -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container">
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="/js/toast-utils.js"></script>
+            <script src="/js/bootstrap-init.js"></script>
+            <script src="/js/store-management.js"></script>
+</body>
+
+</html>

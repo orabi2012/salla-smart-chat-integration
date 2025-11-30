@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/common.css" rel="stylesheet">
+    <link href="/css/edit-page.css" rel="stylesheet">
+    <link href="/css/modern-nav.css" rel="stylesheet">
+    <link href="/css/navbar.css" rel="stylesheet">
+    <link href="/css/clients.css" rel="stylesheet">
+    <link href="/css/forms.css" rel="stylesheet">
+
+</head>
+
+<body class="form-page-body">
+    <% const pageTitle="Edit Store" %>
+        <%- include('../shared/navbar') %>
+
+            <div class="container-fluid mt-2 px-3">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Store Status Card -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">
+                                            <%= store.salla_store_name %>
+                                        </h5>
+                                        <p class="text-muted mb-0">Store ID: <%= store.salla_store_id %>
+                                        </p>
+                                    </div>
+                                    <div class="text-end">
+                                        <span
+                                            class="badge <%= store.is_active ? 'status-active' : 'status-inactive' %> mb-2">
+                                            <%= store.is_active ? 'Active' : 'Inactive' %>
+                                        </span>
+                                        <br>
+                                        <% if (store.ubiqfy_plafond !==null && store.ubiqfy_plafond !==undefined) { %>
+                                            <span class="badge bg-success mb-2">
+                                                Balance: <%= parseInt(store.ubiqfy_plafond) %>¢
+                                            </span>
+                                            <br>
+                                            <% } %>
+                                                <span class="badge bg-info">
+                                                    Last Sync: <%= store.last_sync_at ? new
+                                                        Date(store.last_sync_at).toLocaleString() : 'Never' %>
+                                                </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modern Navigation Bar -->
+                        <div class="card mb-3">
+                            <div class="card-body p-0">
+                                <nav class="nav nav-pills nav-fill modern-nav">
+                                    <a href="/clients/edit/<%= store.id %>"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3 active"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Configure store settings, API credentials, and general options">
+                                        <i class="fas fa-cogs fa-lg me-2"></i>
+                                        <span class="fw-semibold">Store Settings</span>
+                                    </a>
+                                    <a href="/clients/sync/<%= store.id %>"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Fetch products from Ubiqfy and sync them to your Salla store">
+                                        <i class="fas fa-sync-alt fa-lg me-2"></i>
+                                        <span class="fw-semibold">Sync Management</span>
+                                    </a>
+                                    <a href="/clients/stock/<%= store.id %>"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Manage stock levels and purchase codes for synced products">
+                                        <i class="fas fa-cubes fa-lg me-2"></i>
+                                        <span class="fw-semibold">Stock Management</span>
+                                    </a>
+                                    <a href="/store/<%= store.id %>/purchase-orders"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="View and manage purchase orders for this store">
+                                        <i class="fas fa-shopping-cart fa-lg me-2"></i>
+                                        <span class="fw-semibold">Purchase Orders</span>
+                                    </a>
+                                    <% if (user.isSuperadmin) { %>
+                                        <a href="/admin/dashboard"
+                                            class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="Return to admin dashboard">
+                                            <i class="fas fa-arrow-left fa-lg me-2"></i>
+                                            <span class="fw-semibold">Back to Dashboard</span>
+                                        </a>
+                                        <% } %>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <!-- Edit Form -->
+                        <div class="card">
+                            <div class="card-header bg-warning text-dark">
+                                <h4><i class="fas fa-edit"></i> Edit Salla Store</h4>
+                            </div>
+                            <div class="card-body">
+                                <% if (typeof error !=='undefined' ) { %>
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <%= error %>
+                                    </div>
+                                    <% } %>
+
+                                        <% if (typeof success !=='undefined' ) { %>
+                                            <div class="alert alert-success">
+                                                <i class="fas fa-check-circle"></i>
+                                                <%= success %>
+                                            </div>
+                                            <% } %>
+
+                                                <form method="POST" action="/clients/edit/<%= store.id %>">
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="salla_store_id" class="form-label">Salla
+                                                                Store
+                                                                ID
+                                                                *</label>
+                                                            <input type="text" class="form-control" id="salla_store_id"
+                                                                name="salla_store_id"
+                                                                value="<%= store.salla_store_id %>" <% if
+                                                                (!user.isSuperadmin) { %>readonly
+                                                            style="background-color: #f8f9fa;" <% } %>
+                                                                required>
+                                                                <% if (!user.isSuperadmin) { %>
+                                                                    <div class="form-text text-warning">
+                                                                        <i class="fas fa-lock"></i> Protected
+                                                                        field -
+                                                                        contact administrator to modify
+                                                                    </div>
+                                                                    <% } %>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="salla_store_name" class="form-label">Store Name
+                                                                *</label>
+                                                            <input type="text" class="form-control"
+                                                                id="salla_store_name" name="salla_store_name"
+                                                                value="<%= store.salla_store_name %>" <% if
+                                                                (!user.isSuperadmin) { %>readonly
+                                                            style="background-color: #f8f9fa;" <% } %>
+                                                                required>
+                                                                <% if (!user.isSuperadmin) { %>
+                                                                    <div class="form-text text-warning">
+                                                                        <i class="fas fa-lock"></i> Protected
+                                                                        field -
+                                                                        contact administrator to modify
+                                                                    </div>
+                                                                    <% } %>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="salla_owner_name" class="form-label">Owner Name
+                                                                *</label>
+                                                            <input type="text" class="form-control"
+                                                                id="salla_owner_name" name="salla_owner_name"
+                                                                value="<%= store.salla_owner_name %>" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="salla_owner_email" class="form-label">Owner
+                                                                Email
+                                                                *</label>
+                                                            <input type="email" class="form-control"
+                                                                id="salla_owner_email" name="salla_owner_email"
+                                                                value="<%= store.salla_owner_email %>" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="salla_currency" class="form-label">Store
+                                                                Currency <small class="text-muted">(Auto-fetched
+                                                                    from
+                                                                    Salla)</small></label>
+                                                            <input type="text" class="form-control" id="salla_currency"
+                                                                name="salla_currency"
+                                                                value="<%= store.salla_currency || 'SAR' %>" readonly
+                                                                style="background-color: #f8f9fa;">
+                                                            <small class="form-text text-muted">This currency is
+                                                                automatically
+                                                                detected from your Salla store settings.</small>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="currency_conversion_rate"
+                                                                class="form-label">Currency
+                                                                Conversion Rate <small class="text-muted">(1 USD
+                                                                    = ?
+                                                                    Store
+                                                                    Currency)</small></label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">1 USD =</span>
+                                                                <input type="number" class="form-control"
+                                                                    id="currency_conversion_rate"
+                                                                    name="currency_conversion_rate"
+                                                                    value="<%= store.currency_conversion_rate || 3.7500 %>"
+                                                                    step="0.0001" min="0.0001" max="999999" required>
+                                                                <span class="input-group-text">
+                                                                    <%= store.salla_currency || 'SAR' %>
+                                                                </span>
+                                                            </div>
+                                                            <small class="form-text text-muted">Set the exchange
+                                                                rate
+                                                                from USD
+                                                                (Ubiqfy prices) to your store currency. Default:
+                                                                1 USD =
+                                                                3.75
+                                                                SAR</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <h5 class="mt-4 mb-3"><i class="fas fa-shield-alt"></i>
+                                                        Ubiqfy API
+                                                        Credentials</h5>
+                                                    <div class="row">
+                                                        <div class="col-md-4 mb-3">
+                                                            <label for="ubiqfy_username" class="form-label">Username
+                                                                *</label>
+                                                            <input type="text" class="form-control" id="ubiqfy_username"
+                                                                name="ubiqfy_username"
+                                                                value="<%= store.ubiqfy_username %>" required>
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <label for="ubiqfy_password" class="form-label">Password
+                                                                *</label>
+                                                            <input type="password" class="form-control"
+                                                                id="ubiqfy_password" name="ubiqfy_password"
+                                                                placeholder="Enter new password or leave blank to keep current">
+                                                            <div class="form-text">
+                                                                <small class="text-muted">
+                                                                    <i class="fas fa-lock"></i> Password is encrypted in
+                                                                    database.
+                                                                    Leave blank to keep current password.
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <label for="ubiqfy_terminal_key" class="form-label">Terminal
+                                                                Key
+                                                                *</label>
+                                                            <input type="text" class="form-control"
+                                                                id="ubiqfy_terminal_key" name="ubiqfy_terminal_key"
+                                                                value="<%= store.ubiqfy_terminal_key %>" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="ubiqfy_producttypecode"
+                                                                class="form-label">Product Type
+                                                                Code</label>
+                                                            <input type="text" class="form-control"
+                                                                id="ubiqfy_producttypecode"
+                                                                name="ubiqfy_producttypecode"
+                                                                value="<%= store.ubiqfy_producttypecode || 'Voucher' %>"
+                                                                placeholder="e.g., DIGITAL, PHYSICAL, SERVICE, Voucher"
+                                                                <% if (!user.isSuperadmin) { %>readonly
+                                                            style="background-color: #f8f9fa;" <% } %>>
+                                                                <% if (!user.isSuperadmin) { %>
+                                                                    <div class="form-text text-warning">
+                                                                        <i class="fas fa-lock"></i> Protected
+                                                                        field -
+                                                                        contact administrator to modify
+                                                                    </div>
+                                                                    <% } else { %>
+                                                                        <div class="form-text">
+                                                                            <small class="text-muted">Product
+                                                                                type code
+                                                                                for Ubiqfy transactions</small>
+                                                                        </div>
+                                                                        <% } %>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="sku_prefix" class="form-label">
+                                                                <i class="fas fa-tag"></i> SKU Prefix
+                                                            </label>
+                                                            <input type="text" class="form-control" id="sku_prefix"
+                                                                name="sku_prefix"
+                                                                value="<%= store.sku_prefix || 'UBQ' %>"
+                                                                placeholder="e.g., UBQ, UBIQFY, STORE" maxlength="10" <%
+                                                                if (!user.isSuperadmin) { %>readonly
+                                                            style="background-color: #f8f9fa;" <% } %>>
+                                                                <% if (!user.isSuperadmin) { %>
+                                                                    <div class="form-text text-warning">
+                                                                        <i class="fas fa-lock"></i> Protected
+                                                                        field -
+                                                                        contact administrator to modify
+                                                                    </div>
+                                                                    <% } else { %>
+                                                                        <div class="form-text">
+                                                                            <small class="text-muted">Prefix
+                                                                                added to
+                                                                                product SKUs to identify Ubiqfy
+                                                                                products
+                                                                                (e.g., UBQ-PRODUCT123)</small>
+                                                                        </div>
+                                                                        <% } %>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Ubiqfy Balance (Plafond) - Read-only field -->
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="ubiqfy_plafond" class="form-label">
+                                                                <i class="fas fa-wallet"></i> Current Balance
+                                                                (Plafond)
+                                                            </label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">¢</span>
+                                                                <input type="text" class="form-control bg-light"
+                                                                    id="ubiqfy_plafond"
+                                                                    value="<%= store.ubiqfy_plafond !== null && store.ubiqfy_plafond !== undefined ? parseInt(store.ubiqfy_plafond) : 'Not Available' %>"
+                                                                    readonly>
+                                                            </div>
+                                                            <div class="form-text">
+                                                                <small class="text-muted">
+                                                                    <i class="fas fa-info-circle"></i>
+                                                                    Last updated: <%= store.plafond_last_updated ? new
+                                                                        Date(store.plafond_last_updated).toLocaleString()
+                                                                        : 'Never' %>
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3 d-flex align-items-end">
+                                                            <button type="button" class="btn btn-outline-primary"
+                                                                onclick="refreshBalance()">
+                                                                <i class="fas fa-sync-alt"></i> Refresh Balance
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <h5 class="mt-4 mb-3"><i class="fas fa-cog"></i>
+                                                        Configuration</h5>
+                                                    <div class="row">
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="d-flex align-items-center">
+                                                                <label class="toggle-switch">
+                                                                    <input type="checkbox" id="ubiqfy_sandbox"
+                                                                        name="ubiqfy_sandbox" value="true"
+                                                                        <%=store.ubiqfy_sandbox ? 'checked' : '' %>>
+                                                                    <span class="slider"></span>
+                                                                </label>
+                                                                <span class="toggle-label">Use Sandbox
+                                                                    Environment</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <h5 class="mt-4 mb-3"><i class="fas fa-info-circle"></i>
+                                                        Store
+                                                        Status</h5>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="d-flex align-items-center">
+                                                                <label class="toggle-switch">
+                                                                    <input type="checkbox" id="is_active"
+                                                                        name="is_active" value="true" <%=store.is_active
+                                                                        ? 'checked' : '' %>>
+                                                                    <span class="slider"></span>
+                                                                </label>
+                                                                <span class="toggle-label">Store is
+                                                                    Active</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-flex justify-content-end">
+                                                        <button type="submit" class="btn btn-warning btn-lg">
+                                                            <i class="fas fa-save"></i> Update Store Settings
+                                                        </button>
+                                                    </div>
+                                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+            <!-- External JavaScript Files -->
+            <script src="/js/common.js"></script>
+            <script src="/js/bootstrap-init.js"></script>
+            <script src="/js/store-data-init.js"></script>
+            <script src="/js/client-edit.js"></script>
+            <script src="/js/edit-page.js"></script>
+
+            <script>
+                // Initialize store data from server-side variables
+                document.addEventListener('DOMContentLoaded', function () {
+                    const storeData = {
+                        id: '<%= store.id %>',
+                        salla_currency: '<%= store.salla_currency || "SAR" %>',
+                        currency_conversion_rate: parseFloat('<%= store.currency_conversion_rate || 3.75 %>'),
+                        ubiqfy_currency: '<%= store.ubiqfy_currency || "USD" %>'
+                    };
+
+                    // Initialize the application with server data
+                    initializeStoreData(storeData);
+                });
+            </script>
+            </script>
+</body>
+
+</html>

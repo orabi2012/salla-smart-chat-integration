@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/common.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Include Shared Navbar -->
+    <% // Set page-specific variables for navbar var pageTitle="Admin Dashboard" ; %>
+        <%- include('../shared/navbar') %>
+
+            <div class="container-fluid mt-4">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <i class="fas fa-tachometer-alt me-1"></i>Admin Dashboard
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Admin Dashboard Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h2 class="mb-0">
+                                            <i class="fas fa-tachometer-alt me-2 text-primary"></i>
+                                            Admin Dashboard
+                                        </h2>
+                                        <p class="text-muted mb-0">System overview and management</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">Total Stores</h6>
+                                        <h3 class="mb-0">
+                                            <%= storeCount %>
+                                        </h3>
+                                        <small>
+                                            <%= activeStores %> active
+                                        </small>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-store fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">Total Users</h6>
+                                        <h3 class="mb-0">
+                                            <%= userCount %>
+                                        </h3>
+                                        <small>
+                                            <%= activeUsers %> active
+                                        </small>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-users fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Actions -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-store me-2"></i>Store Management
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p>Manage Salla stores, add new stores, edit settings, and activate/deactivate stores.
+                                </p>
+                                <div class="d-grid gap-2">
+                                    <a href="/admin/stores" class="btn btn-primary">
+                                        <i class="fas fa-list me-2"></i>View All Stores
+                                    </a>
+                                    <a href="/admin/stores/add" class="btn btn-outline-primary">
+                                        <i class="fas fa-plus me-2"></i>Add New Store
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-users me-2"></i>User Management
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p>Manage system users, assign stores to users, and control user access.</p>
+                                <div class="d-grid gap-2">
+                                    <a href="/admin/users" class="btn btn-success">
+                                        <i class="fas fa-list me-2"></i>View All Users
+                                    </a>
+                                    <a href="/admin/users/add" class="btn btn-outline-success">
+                                        <i class="fas fa-user-plus me-2"></i>Add New User
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- Dropdown initialization is now handled in shared navbar -->
+</body>
+
+</html>

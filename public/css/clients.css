@@ -1,0 +1,410 @@
+/* Client Management Specific Styles */
+
+/* Store card styling */
+.store-card {
+    transition: all 0.3s ease;
+    border: none !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.store-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Status badge styling */
+.status-active {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-inactive {
+    background: linear-gradient(45deg, #6c757d, #495057) !important;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Store avatar styling */
+.store-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Action buttons styling */
+.action-buttons .btn {
+    margin: 0 2px;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    padding: 6px 12px;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Sync status badges */
+.sync-status-success {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sync-status-failed {
+    background: linear-gradient(45deg, #dc3545, #c82333) !important;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sync-status-syncing {
+    background: linear-gradient(45deg, #ffc107, #e0a800) !important;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+.sync-status-pending {
+    background: linear-gradient(45deg, #6c757d, #545b62) !important;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Enhanced table styling */
+.table {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table thead th {
+    background: #f8f9fa;
+    color: #000000;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.05);
+    transform: scale(1.01);
+}
+
+/* Modern navigation specific to client pages */
+.modern-nav .nav-link {
+    transition: all 0.3s ease;
+    border-radius: 0.375rem !important;
+    margin: 0.2rem;
+    font-weight: 500;
+}
+
+.modern-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modern-nav .nav-link.active {
+    background: rgba(255, 255, 255, 0.2) !important;
+    font-weight: 600;
+}
+
+.modern-nav {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-radius: 0.375rem;
+    padding: 0.3rem;
+}
+
+/* Product Options Mobile Responsive Styles */
+.option-card {
+    position: relative;
+}
+
+.pricing-control-item {
+    min-width: 0;
+    flex: 1;
+}
+
+.pricing-section {
+    overflow-x: auto;
+}
+
+.pricing-info-display {
+    font-size: 0.85rem;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+
+    /* Stock Management Table - Hide specific columns on mobile */
+    .table th:nth-child(1),
+    /* Product */
+    .table td:nth-child(1),
+    .table th:nth-child(3),
+    /* Salla Product ID */
+    .table td:nth-child(3),
+    .table th:nth-child(9),
+    /* Cost Price (USD) */
+    .table td:nth-child(9),
+    .table th:nth-child(10),
+    /* Last Synced */
+    .table td:nth-child(10) {
+        display: none !important;
+    }
+
+    /* Make remaining columns more compact */
+    .table {
+        font-size: 0.85rem;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem 0.25rem;
+        vertical-align: middle;
+    }
+
+    /* Make input fields smaller on mobile */
+    .table .input-group-sm {
+        max-width: 80px;
+    }
+
+    /* Navigation - hide text labels on mobile, show only icons */
+    .modern-nav .nav-link {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .modern-nav .nav-link .fw-semibold {
+        display: none;
+    }
+
+    /* Product cards stack better on mobile */
+    .card-body {
+        padding: 1rem !important;
+    }
+
+    /* Option cards responsive layout */
+    .option-card {
+        margin-bottom: 1rem !important;
+        padding: 0.75rem !important;
+    }
+
+    /* Compact header on mobile */
+    .option-card .row.mb-1 {
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* Stack pricing controls vertically on mobile */
+    .pricing-section .d-flex.align-items-center.justify-content-between.gap-3 {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem !important;
+    }
+
+    .pricing-control-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+    }
+
+    .pricing-control-item label {
+        margin-bottom: 0.5rem !important;
+        min-width: auto !important;
+    }
+
+    .pricing-control-item .input-group {
+        width: 100% !important;
+        max-width: 200px;
+    }
+
+    /* Final price display */
+    .pricing-control-item:last-child {
+        align-items: center !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+    }
+
+    .pricing-control-item:last-child span:last-child {
+        min-width: auto !important;
+        flex: 1;
+        max-width: 150px;
+        text-align: center;
+    }
+
+    /* Pricing breakdown responsive */
+    .pricing-info-display .d-flex {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+
+    .pricing-info-display .d-flex>div {
+        justify-content: space-between !important;
+        align-items: center !important;
+        display: flex !important;
+    }
+
+    /* Badge wrapping on mobile */
+    .d-flex.gap-2 {
+        flex-wrap: wrap !important;
+    }
+
+    /* Product info grid mobile */
+    .row.g-3.mb-3 {
+        margin-bottom: 1rem !important;
+    }
+
+    .row.g-3.mb-3 .col-md-6 {
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* Options count badge positioning */
+    .options-count-badge {
+        display: block !important;
+        margin-top: 0.5rem !important;
+        margin-left: 0 !important;
+    }
+
+    /* Collapse button responsive */
+    .btn.btn-sm.btn-outline-primary {
+        padding: 0.375rem 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+
+    /* Store status card mobile */
+    .store-card .d-flex {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .store-card .text-end {
+        text-align: left !important;
+        margin-top: 1rem;
+    }
+
+    /* Sync status info responsive */
+    .col-md-3 {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+
+    /* Extra small mobile devices */
+    .card-body {
+        padding: 0.75rem !important;
+    }
+
+    .option-card {
+        padding: 0.5rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Smaller text on very small screens */
+    .option-card h6 {
+        font-size: 0.9rem !important;
+    }
+
+    .badge {
+        font-size: 0.7rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+
+    /* Pricing controls more compact */
+    .pricing-control-item .input-group {
+        max-width: 160px !important;
+    }
+
+    .pricing-control-item label {
+        font-size: 0.8rem !important;
+    }
+
+    /* Final price smaller */
+    .final-price-display {
+        font-size: 0.8rem !important;
+    }
+
+    /* Option header more compact */
+    .option-card .d-flex.align-items-center.justify-content-between.mb-1 {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+    }
+
+    .option-card .d-flex.align-items-center.justify-content-between.mb-1>div:first-child {
+        width: 100% !important;
+    }
+
+    .option-card .d-flex.align-items-center.justify-content-between.mb-1>small {
+        align-self: flex-end !important;
+    }
+
+    /* Container padding adjustment */
+    .container-fluid {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    /* Card margins */
+    .card.mb-3 {
+        margin-bottom: 1rem !important;
+    }
+
+    /* Button text wrapping */
+    .btn {
+        white-space: normal !important;
+        word-wrap: break-word !important;
+    }
+
+    /* Sync operations buttons full width on very small screens */
+    .btn.btn-info,
+    .btn.btn-success,
+    .btn.btn-primary {
+        margin-bottom: 0.5rem;
+    }
+
+    /* Header titles smaller */
+    h5 {
+        font-size: 1.1rem !important;
+    }
+
+    h6 {
+        font-size: 1rem !important;
+    }
+}

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/common.css" rel="stylesheet">
+    <link href="/css/navbar.css" rel="stylesheet">
+    <link href="/css/forms.css" rel="stylesheet">
+    <link href="/css/users.css" rel="stylesheet">
+    <link href="/css/edit-page.css" rel="stylesheet">
+</head>
+
+<body class="form-page-body">
+    <% const pageTitle="Edit User" %>
+        <%- include('../shared/navbar') %>
+
+            <div class="container-fluid mt-2 px-3">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Breadcrumb Navigation -->
+                        <nav aria-label="breadcrumb" class="mb-3">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/users">User Management</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Edit User</li>
+                            </ol>
+                        </nav>
+
+                        <!-- Modern Navigation Bar -->
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-body p-0">
+                                <div class="bg-gradient-primary text-white p-3 rounded-top">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h4 class="mb-0">
+                                                <i class="fas fa-user-edit me-2"></i>
+                                                Edit User: <%= userToEdit.username %>
+                                            </h4>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="/users" class="btn btn-light btn-sm">
+                                                <i class="fas fa-arrow-left me-1"></i>
+                                                Back to Users
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <nav class="nav nav-pills nav-fill modern-nav">
+                                    <a href="/clients"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Manage Salla stores">
+                                        <i class="fas fa-store fa-lg me-2"></i>
+                                        <span class="fw-semibold">Stores</span>
+                                    </a>
+                                    <a href="/users"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3 active"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Manage users">
+                                        <i class="fas fa-users fa-lg me-2"></i>
+                                        <span class="fw-semibold">Users</span>
+                                    </a>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <!-- Success/Error Messages -->
+                        <% if (typeof successMessage !=='undefined' && successMessage) { %>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <%= successMessage %>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            <% } %>
+
+                                <% if (typeof errorMessage !=='undefined' && errorMessage) { %>
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        <%= errorMessage %>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                    <% } %>
+
+                                        <!-- Edit User Form -->
+                                        <div class="card shadow-sm border-0 form-card">
+                                            <div class="card-header bg-gradient-primary text-white">
+                                                <h4 class="mb-0">
+                                                    <i class="fas fa-user-edit me-2"></i>
+                                                    User Details
+                                                </h4>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <% if (userToEdit) { %>
+                                                    <form action="/users/edit/<%= userToEdit.id %>" method="POST"
+                                                        id="editUserForm">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label for="username" class="form-label">
+                                                                        <i class="fas fa-user me-1"></i>
+                                                                        Username <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="username" name="username" required
+                                                                        value="<%= userToEdit.username %>"
+                                                                        placeholder="Enter username"
+                                                                        pattern="[a-zA-Z0-9_.-]+"
+                                                                        title="Username can only contain letters, numbers, dots, dashes, and underscores">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label for="password" class="form-label">
+                                                                        <i class="fas fa-lock me-1"></i>
+                                                                        New Password
+                                                                    </label>
+                                                                    <div class="input-group">
+                                                                        <input type="password" class="form-control"
+                                                                            id="password" name="password"
+                                                                            placeholder="Leave blank to keep current password"
+                                                                            minlength="6" maxlength="128"
+                                                                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$"
+                                                                            title="Password must be at least 6 characters and contain at least one uppercase letter, one lowercase letter, and one number">
+                                                                        <button class="btn btn-outline-secondary"
+                                                                            type="button" onclick="togglePassword()">
+                                                                            <i class="fas fa-eye"
+                                                                                id="passwordToggleIcon"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="form-text">
+                                                                        <div class="d-flex align-items-start">
+                                                                            <i
+                                                                                class="fas fa-info-circle me-2 mt-1 text-info"></i>
+                                                                            <div>
+                                                                                <strong>Password
+                                                                                    Requirements:</strong><br>
+                                                                                • Leave empty to keep current
+                                                                                password<br>
+                                                                                • Minimum 6 characters<br>
+                                                                                • At least one uppercase letter<br>
+                                                                                • At least one lowercase letter<br>
+                                                                                • At least one number<br>
+                                                                                <small class="text-success">
+                                                                                    <i
+                                                                                        class="fas fa-shield-alt me-1"></i>
+                                                                                    Passwords are securely hashed and
+                                                                                    encrypted
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label for="assignedStoreId" class="form-label">
+                                                                        <i class="fas fa-store me-1"></i>
+                                                                        Assigned Store
+                                                                    </label>
+                                                                    <select class="form-select" id="assignedStoreId"
+                                                                        name="assignedStoreId">
+                                                                        <option value="">No store assigned</option>
+                                                                        <% if (stores && stores.length> 0) { %>
+                                                                            <% stores.forEach(function(store) { %>
+                                                                                <option value="<%= store.id %>"
+                                                                                    <%=(userToEdit.assignedStoreId===store.id)
+                                                                                    ? 'selected' : '' %>>
+                                                                                    <%= store.salla_store_name %> (<%=
+                                                                                            store.salla_owner_name %>)
+                                                                                </option>
+                                                                                <% }); %>
+                                                                                    <% } %>
+                                                                    </select>
+                                                                    <div class="form-text">
+                                                                        Users with assigned stores can only access their
+                                                                        specific store.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">
+                                                                        <i class="fas fa-toggle-on me-1"></i>
+                                                                        User Status & Role
+                                                                    </label>
+                                                                    <div class="border rounded p-3 bg-light">
+                                                                        <div class="form-check mb-2">
+                                                                            <input class="form-check-input"
+                                                                                type="checkbox" id="isActive"
+                                                                                name="isActive" <%=userToEdit.isActive
+                                                                                ? 'checked' : '' %>>
+                                                                            <label class="form-check-label"
+                                                                                for="isActive">
+                                                                                <i
+                                                                                    class="fas fa-check-circle me-1 text-success"></i>
+                                                                                Active User
+                                                                            </label>
+                                                                        </div>
+                                                                        <% if (userToEdit.isSuperadmin) { %>
+                                                                            <div class="alert alert-info mb-0"
+                                                                                role="alert">
+                                                                                <i class="fas fa-crown me-1"></i>
+                                                                                <strong>Super Admin:</strong> This user
+                                                                                has full
+                                                                                system access.
+                                                                            </div>
+                                                                            <% } else { %>
+                                                                                <small class="text-muted">
+                                                                                    <i
+                                                                                        class="fas fa-info-circle me-1"></i>
+                                                                                    Regular user with access only to
+                                                                                    assigned
+                                                                                    store.
+                                                                                </small>
+                                                                                <% } %>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between">
+                                                            <a href="/admin/dashboard" class="btn btn-secondary">
+                                                                <i class="fas fa-arrow-left me-2"></i>
+                                                                Back to Dashboard
+                                                            </a>
+                                                            <button type="submit" class="btn btn-primary">
+                                                                <i class="fas fa-save me-2"></i>
+                                                                Update User
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                    <% } else { %>
+                                                        <div class="alert alert-danger" role="alert">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                                            User not found.
+                                                        </div>
+                                                        <a href="/admin/dashboard" class="btn btn-secondary">
+                                                            <i class="fas fa-arrow-left me-2"></i>
+                                                            Back to Dashboard
+                                                        </a>
+                                                        <% } %>
+                                            </div>
+                                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="/js/bootstrap-init.js"></script>
+            <script src="/js/user-forms.js"></script>
+            <script>
+                // Initialize edit user form when DOM is ready
+                document.addEventListener('DOMContentLoaded', function () {
+                    initializeEditUserForm();
+                });
+            </script>
+</body>
+
+</html>

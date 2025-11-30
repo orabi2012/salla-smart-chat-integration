@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/common.css" rel="stylesheet">
+    <link href="/css/edit-page.css" rel="stylesheet">
+    <link href="/css/modern-nav.css" rel="stylesheet">
+    <link href="/css/navbar.css" rel="stylesheet">
+    <link href="/css/clients.css" rel="stylesheet">
+</head>
+
+<body class="form-page-body">
+    <% const pageTitle="Sync Store" %>
+        <%- include('../shared/navbar') %>
+
+            <div class="container-fluid mt-2 px-3">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Store Status Card -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">
+                                            <%= store.salla_store_name %>
+                                        </h5>
+                                        <p class="text-muted mb-0">Store ID: <%= store.salla_store_id %>
+                                        </p>
+                                    </div>
+                                    <div class="text-end">
+                                        <span
+                                            class="badge <%= store.is_active ? 'status-active' : 'status-inactive' %> mb-2">
+                                            <%= store.is_active ? 'Active' : 'Inactive' %>
+                                        </span>
+                                        <br>
+                                        <% if (store.ubiqfy_plafond !==null && store.ubiqfy_plafond !==undefined) { %>
+                                            <span class="badge bg-success mb-2">
+                                                Balance: <%= parseInt(store.ubiqfy_plafond) %>¢
+                                            </span>
+                                            <br>
+                                            <% } %>
+
+                                                <!-- Sync Status Badge -->
+                                                <% let syncStatusClass='' ; let syncStatusText='' ;
+                                                    switch(store.sync_status) { case 'success' :
+                                                    syncStatusClass='bg-success' ; syncStatusText='Success' ; break;
+                                                    case 'syncing' : syncStatusClass='bg-warning' ;
+                                                    syncStatusText='Syncing' ; break; case 'failed' :
+                                                    syncStatusClass='bg-danger' ; syncStatusText='Failed' ; break;
+                                                    default: syncStatusClass='bg-secondary' ; syncStatusText='Pending' ;
+                                                    } %>
+                                                    <span class="badge <%= syncStatusClass %> mb-2">
+                                                        <i class="fas fa-sync-alt me-1"></i>
+                                                        <%= syncStatusText %>
+                                                    </span>
+                                                    <br>
+
+                                                    <span class="badge bg-info">
+                                                        Last Sync: <%= store.last_sync_at ? new
+                                                            Date(store.last_sync_at).toLocaleString() : 'Never' %>
+                                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modern Navigation Bar -->
+                        <div class="card mb-3">
+                            <div class="card-body p-0">
+                                <nav class="nav nav-pills nav-fill modern-nav">
+                                    <a href="/clients/edit/<%= store.id %>"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Configure store settings, API credentials, and general options">
+                                        <i class="fas fa-cogs fa-lg me-2"></i>
+                                        <span class="fw-semibold">Store Settings</span>
+                                    </a>
+                                    <a href="/clients/sync/<%= store.id %>"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3 active"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Fetch products from Ubiqfy and sync them to your Salla store">
+                                        <i class="fas fa-sync-alt fa-lg me-2"></i>
+                                        <span class="fw-semibold">Sync Management</span>
+                                    </a>
+                                    <a href="/clients/stock/<%= store.id %>"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Manage stock levels and purchase codes for synced products">
+                                        <i class="fas fa-cubes fa-lg me-2"></i>
+                                        <span class="fw-semibold">Stock Management</span>
+                                    </a>
+                                    <a href="/store/<%= store.id %>/purchase-orders"
+                                        class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="View and manage purchase orders for this store">
+                                        <i class="fas fa-shopping-cart fa-lg me-2"></i>
+                                        <span class="fw-semibold">Purchase Orders</span>
+                                    </a>
+                                    <% if (user.isSuperadmin) { %>
+                                        <a href="/admin/dashboard"
+                                            class="nav-link text-white d-flex align-items-center justify-content-center py-3"
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="Return to admin dashboard">
+                                            <i class="fas fa-arrow-left fa-lg me-2"></i>
+                                            <span class="fw-semibold">Back to Dashboard</span>
+                                        </a>
+                                        <% } %>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <!-- Sync Status Information Card -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-line"></i> Sync Status Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-3">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <% let syncStatusIcon='' ; let syncStatusColor='' ;
+                                                switch(store.sync_status) { case 'success' :
+                                                syncStatusIcon='fas fa-check-circle' ; syncStatusColor='text-success' ;
+                                                break; case 'syncing' : syncStatusIcon='fas fa-sync fa-spin' ;
+                                                syncStatusColor='text-warning' ; break; case 'failed' :
+                                                syncStatusIcon='fas fa-times-circle' ; syncStatusColor='text-danger' ;
+                                                break; default: syncStatusIcon='fas fa-clock' ;
+                                                syncStatusColor='text-secondary' ; } %>
+                                                <i class="<%= syncStatusIcon %> fa-2x <%= syncStatusColor %> mb-2"></i>
+                                                <h5 class="<%= syncStatusColor %>">
+                                                    <%= store.sync_status.charAt(0).toUpperCase() +
+                                                        store.sync_status.slice(1) %>
+                                                </h5>
+                                                <small class="text-muted">Current Status</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <i class="fas fa-clock fa-2x text-info mb-2"></i>
+                                            <h5 class="text-info">
+                                                <%= store.last_sync_at ? new
+                                                    Date(store.last_sync_at).toLocaleDateString() + ' at ' + new
+                                                    Date(store.last_sync_at).toLocaleTimeString() : 'Never' %>
+                                            </h5>
+                                            <small class="text-muted">Last Sync</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <i class="fas fa-boxes fa-2x text-primary mb-2"></i>
+                                            <h5 class="text-primary">
+                                                <%= store.total_products_synced || 0 %>
+                                            </h5>
+                                            <small class="text-muted">Products Synced</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <% if (store.last_error_message) { %>
+                                                <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"
+                                                    title="<%= store.last_error_message %>"
+                                                    data-bs-toggle="tooltip"></i>
+                                                <h6 class="text-danger">Error</h6>
+                                                <small class="text-muted">Last Error</small>
+                                                <% } else { %>
+                                                    <i class="fas fa-shield-check fa-2x text-success mb-2"></i>
+                                                    <h6 class="text-success">No Errors</h6>
+                                                    <small class="text-muted">Status</small>
+                                                    <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <% if (store.last_error_message) { %>
+                                    <div class="alert alert-danger mt-3">
+                                        <strong><i class="fas fa-exclamation-triangle"></i> Last Error:</strong>
+                                        <div class="mt-2">
+                                            <code><%= store.last_error_message %></code>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                            </div>
+                        </div>
+
+                        <!-- Sync Actions Card -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <h5><i class="fas fa-cogs"></i> Sync Operations</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-4">
+                                    <div class="col-12 col-lg-6">
+                                        <h6><i class="fas fa-key"></i> Ubiqfy Authentication</h6>
+                                        <p class="text-muted">Test your Ubiqfy API credentials and fetch current balance
+                                        </p>
+                                        <div class="d-grid gap-2 d-md-flex">
+                                            <button type="button" class="btn btn-info flex-fill flex-md-grow-0"
+                                                onclick="testUbiqfyAuth()">
+                                                <i class="fas fa-test"></i> Test Auth
+                                            </button>
+                                            <button type="button" class="btn btn-success flex-fill flex-md-grow-0"
+                                                onclick="fetchUbiqfyProducts()">
+                                                <i class="fas fa-shopping-cart"></i> Fetch Products
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <h6><i class="fas fa-store"></i> Salla Integration</h6>
+                                        <p class="text-muted">Test Salla connection and sync selected products</p>
+                                        <div class="d-grid gap-2">
+                                            <button type="button" class="btn btn-info" id="testSallaBtn"
+                                                onclick="testSallaConnection()" title="Test connection to Salla API">
+                                                <i class="fas fa-link"></i> Test Connection
+                                            </button>
+                                            <button type="button" class="btn btn-primary" id="syncToSallaBtn"
+                                                onclick="syncSelectedProductsToSalla()" disabled
+                                                title="Sync selected options to your Salla store">
+                                                <i class="fas fa-sync-alt me-2"></i>Sync to Salla
+                                                <span id="selectedCountBadge"
+                                                    class="badge bg-white text-primary ms-2 px-2 py-1"
+                                                    title="Products / Options selected for sync">
+                                                    <i class="fas fa-box me-1"></i><span class="fw-bold">0</span>
+                                                    <span class="mx-1">|</span>
+                                                    <i class="fas fa-list me-1"></i><span class="fw-bold">0</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Products Display Card -->
+                        <div class="card" id="productsCard" style="display: none;">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-box"></i>
+                                        <span id="productTypeLabel">Available Products</span>
+                                        <span class="badge bg-primary ms-2" id="productCountLabel">0</span>
+                                    </h5>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                        onclick="toggleCountryFilter()">
+                                        <i class="fas fa-globe"></i> Filter by Country
+                                    </button>
+                                </div>
+
+                                <!-- Country Filter Section -->
+                                <div class="mb-4 p-3 bg-light rounded" id="countryFilterSection" style="display: none;">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-globe"></i> Filter by Country
+                                        </h6>
+                                        <div>
+                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                onclick="selectAllCountries()">
+                                                <i class="fas fa-check-square"></i> All
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary ms-1"
+                                                onclick="deselectAllCountries()">
+                                                <i class="fas fa-square"></i> None
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="countryCheckboxes" class="d-flex flex-wrap gap-2">
+                                        <!-- Country checkboxes will be populated here -->
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <span id="filteredCountryCount">0</span> countries selected •
+                                            <span id="filteredProductCount">0</span> products shown
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Search and Filter Section -->
+                                <div class="card mb-3">
+                                    <div class="card-body p-3">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-12">
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                                    <input type="text" class="form-control" id="productSearch"
+                                                        placeholder="Search products by name, code, or country..."
+                                                        oninput="filterProducts()" onkeyup="filterProducts()">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row align-items-center mb-4">
+                                    <!-- Selection Controls -->
+                                    <div class="col-lg-8 mb-2 mb-lg-0">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="selectAllProductsCheckbox" onchange="toggleAllProducts()"
+                                                title="Select/Deselect all products">
+                                            <label class="form-check-label fw-bold" for="selectAllProductsCheckbox">
+                                                <i class="fas fa-box me-2"></i>Select All Products
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="saveStatus" class="mt-2"></div>
+                            </div>
+
+                            <!-- Progress and Status Section -->
+                            <div id="progressSection" class="card mb-3" style="display: none;">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span id="progressText">Processing...</span>
+                                        <span id="progressPercent">0%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div id="progressBar"
+                                            class="progress-bar progress-bar-striped progress-bar-animated"
+                                            style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Products Container -->
+                            <div class="card-body" id="productsContainer">
+                                <!-- Products will be dynamically loaded here -->
+                            </div>
+
+                            <!-- No Products Message -->
+                            <div class="card-body text-center" id="noProductsMessage" style="display: none;">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">No Products Available</h5>
+                                <p class="text-muted">Click "Fetch Products" to load products from Ubiqfy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+            <!-- External JavaScript Files -->
+            <script src="/js/common.js"></script>
+            <script src="/js/bootstrap-init.js"></script>
+            <script src="/js/store-data-init.js"></script>
+            <script src="/js/product-rendering.js"></script>
+            <script src="/js/pricing-management.js"></script>
+            <script src="/js/product-sync.js"></script>
+            <script src="/js/sync-page.js"></script>
+
+            <script>
+                // Initialize store data from server-side variables
+                document.addEventListener('DOMContentLoaded', function () {
+                    const storeData = {
+                        id: '<%= store.id %>',
+                        salla_currency: '<%= store.salla_currency || "SAR" %>',
+                        currency_conversion_rate: parseFloat('<%= store.currency_conversion_rate || 3.75 %>'),
+                        ubiqfy_currency: '<%= store.ubiqfy_currency || "USD" %>'
+                    };
+
+                    // Initialize the application with server data
+                    initializeStoreData(storeData);
+                });
+            </script>
+</body>
+
+</html>
