@@ -17,14 +17,15 @@ import { SallaStore, SyncStatus } from './salla-stores.entity';
 import { SuperAdminGuard } from '../auth/super-admin.guard';
 import { StoreAccessGuard } from '../auth/store-access.guard';
 import { isValidUUID } from '../utils/uuid.helper';
+import { SallaIntegrationService } from './salla-integration.service';
 
 @Controller('salla-stores')
-@UseGuards(AuthGuard('jwt'))
 export class SallaStoresController {
   constructor(
     private readonly sallaStoresService: SallaStoresService,
     private readonly sallaWebhookManagementService: SallaWebhookManagementService,
-  ) {}
+    private readonly sallaIntegrationService: SallaIntegrationService,
+  ) { }
 
   private validateUUID(id: string): void {
     if (!isValidUUID(id)) {
@@ -33,7 +34,7 @@ export class SallaStoresController {
   }
 
   @Post()
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(AuthGuard('jwt'), SuperAdminGuard)
   async create(@Body() createStoreDto: Partial<SallaStore>) {
     if (!createStoreDto.salla_store_id) {
       throw new HttpException(
@@ -60,19 +61,19 @@ export class SallaStoresController {
   }
 
   @Get()
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(AuthGuard('jwt'), SuperAdminGuard)
   async findAll() {
     return await this.sallaStoresService.findAll();
   }
 
   @Get('active')
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(AuthGuard('jwt'), SuperAdminGuard)
   async findActiveStores() {
     return await this.sallaStoresService.findActiveStores();
   }
 
   @Get(':id')
-  @UseGuards(StoreAccessGuard)
+  @UseGuards(AuthGuard('jwt'), StoreAccessGuard)
   async findById(@Param('id') id: string) {
     this.validateUUID(id);
     const store = await this.sallaStoresService.findById(id);
@@ -83,7 +84,7 @@ export class SallaStoresController {
   }
 
   @Put(':id')
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(AuthGuard('jwt'), SuperAdminGuard)
   async update(
     @Param('id') id: string,
     @Body() updateData: Partial<SallaStore>,
@@ -96,8 +97,29 @@ export class SallaStoresController {
     return updatedStore;
   }
 
+  @Get(':sallaStoreId/products')
+  async getStoreProducts(@Param('sallaStoreId') sallaStoreId: string) {
+    const store = await this.sallaStoresService.findBySallaStoreId(
+      sallaStoreId,
+    );
+
+    if (!store) {
+      throw new HttpException('Store not found', HttpStatus.NOT_FOUND);
+    }
+
+    const products = await this.sallaIntegrationService.getSallaProducts(
+      store.id,
+    );
+    return {
+      store_id: store.id,
+      salla_store_id: store.salla_store_id,
+      total: products.length,
+      data: products,
+    };
+  }
+
   @Put(':id/toggle-active')
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(AuthGuard('jwt'), SuperAdminGuard)
   async toggleActive(@Param('id') id: string) {
     this.validateUUID(id);
     const updatedStore = await this.sallaStoresService.toggleActive(id);
@@ -108,6 +130,7 @@ export class SallaStoresController {
   }
 
   @Put(':id/sync-status')
+  @UseGuards(AuthGuard('jwt'))
   async updateSyncStatus(
     @Param('id') id: string,
     @Body() body: { status: SyncStatus; errorMessage?: string },
@@ -122,6 +145,7 @@ export class SallaStoresController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
   async delete(@Param('id') id: string) {
     this.validateUUID(id);
     const store = await this.sallaStoresService.findById(id);
@@ -142,6 +166,7 @@ export class SallaStoresController {
    * Body: { "webhook_base_url": "https://yourdomain.com" }
    */
   @Post(':id/webhooks/register')
+  @UseGuards(AuthGuard('jwt'))
   async registerWebhooks(
     @Param('id') id: string,
     @Body() body: { webhook_base_url: string },
@@ -185,6 +210,7 @@ export class SallaStoresController {
    * GET /salla-stores/:id/webhooks
    */
   @Get(':id/webhooks')
+  @UseGuards(AuthGuard('jwt'))
   async listWebhooks(@Param('id') id: string) {
     this.validateUUID(id);
 
@@ -209,6 +235,7 @@ export class SallaStoresController {
    * GET /salla-stores/:id/webhooks/events
    */
   @Get(':id/webhooks/events')
+  @UseGuards(AuthGuard('jwt'))
   async getWebhookEvents(@Param('id') id: string) {
     this.validateUUID(id);
 
@@ -233,6 +260,7 @@ export class SallaStoresController {
    * DELETE /salla-stores/:id/webhooks/:webhook_id
    */
   @Delete(':id/webhooks/:webhook_id')
+  @UseGuards(AuthGuard('jwt'))
   async deactivateWebhook(
     @Param('id') id: string,
     @Param('webhook_id') webhookId: string,

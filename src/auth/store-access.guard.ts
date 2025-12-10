@@ -12,7 +12,7 @@ export class StoreAccessGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private sallaStoresService: SallaStoresService,
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -69,8 +69,38 @@ export class StoreAccessGuard implements CanActivate {
     const query = request.query || {};
     const body = request.body || {};
 
-    const storeId =
+    let storeId =
       params.id || params.storeId || query.storeId || body.storeId;
+
+    const sallaStoreId =
+      params.sallaStoreId || query.sallaStoreId || body.sallaStoreId;
+
+    if (!storeId && sallaStoreId) {
+      try {
+        const store = await this.sallaStoresService.findBySallaStoreId(
+          sallaStoreId,
+        );
+
+        if (!store) {
+          console.log(
+            'StoreAccessGuard - Salla store ID not found in system:',
+            sallaStoreId,
+          );
+          throw new ForbiddenException('Access denied to this store');
+        }
+
+        storeId = store.id;
+      } catch (error) {
+        if (error instanceof ForbiddenException) {
+          throw error;
+        }
+        console.log(
+          'StoreAccessGuard - Error resolving Salla store ID:',
+          error.message,
+        );
+        throw new ForbiddenException('Unable to verify store access');
+      }
+    }
 
     console.log('StoreAccessGuard - Store ID param:', storeId);
 

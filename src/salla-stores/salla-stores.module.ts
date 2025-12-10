@@ -11,6 +11,7 @@ import { SallaDevController } from './salla-dev.controller';
 import { SallaWebhookController } from './salla-webhook.controller';
 import { SallaIntegrationService } from './salla-integration.service';
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([SallaStore]), ConfigModule],
   controllers: [
@@ -24,6 +25,7 @@ import { SallaIntegrationService } from './salla-integration.service';
     SallaWebhookService,
     SallaWebhookManagementService,
     SallaIntegrationService,
+
   ],
   exports: [
     SallaStoresService,
@@ -31,6 +33,7 @@ import { SallaIntegrationService } from './salla-integration.service';
     SallaWebhookService,
     SallaWebhookManagementService,
     SallaIntegrationService,
+
   ],
 })
-export class SallaStoresModule {}
+export class SallaStoresModule { }
