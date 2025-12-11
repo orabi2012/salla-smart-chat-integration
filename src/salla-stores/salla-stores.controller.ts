@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   HttpException,
   HttpStatus,
   Param,
@@ -18,6 +19,23 @@ import { SuperAdminGuard } from '../auth/super-admin.guard';
 import { StoreAccessGuard } from '../auth/store-access.guard';
 import { isValidUUID } from '../utils/uuid.helper';
 import { SallaIntegrationService } from './salla-integration.service';
+
+type SimplifiedProduct = {
+  sku: string | null;
+  type: string | null;
+  name: string | null;
+  customer_url: string | null;
+  price_amount: number | string | null;
+  price_currency: string | null;
+  description: string | null;
+  quantity: number | string | null;
+  status: string | null;
+  is_available: boolean | string | null;
+  sale_price_amount: number | string | null;
+  sale_end: string | null;
+  main_image: string | null;
+  primary_category_name: string | null;
+};
 
 @Controller('salla-stores')
 export class SallaStoresController {
@@ -99,43 +117,19 @@ export class SallaStoresController {
 
   @Get(':sallaStoreId/products')
   async getStoreProducts(@Param('sallaStoreId') sallaStoreId: string) {
-    const store = await this.sallaStoresService.findBySallaStoreId(
-      sallaStoreId,
-    );
-
-    if (!store) {
-      throw new HttpException('Store not found', HttpStatus.NOT_FOUND);
-    }
-
-    const products = await this.sallaIntegrationService.getSallaProducts(
-      store.id,
-    );
-
-    const simplifiedProducts = products.map((product) => ({
-      sku: product?.sku ?? null,
-      type: product?.type ?? null,
-      name: product?.name ?? null,
-      customer_url: product?.urls?.customer ?? null,
-      price_amount: this.extractPriceAmount(product?.price),
-      price_currency: this.extractPriceCurrency(
-        product?.price,
-        product?.currency,
-      ),
-      description: product?.description ?? null,
-      quantity: product?.quantity ?? null,
-      status: product?.status ?? null,
-      is_available: product?.is_available ?? null,
-      sale_price_amount: this.extractPriceAmount(
-        product?.sale_price ?? product?.salePrice,
-      ),
-      sale_end: product?.sale_end ?? product?.saleEnd ?? null,
-      main_image: this.resolveMainImage(product),
-      primary_category_name: Array.isArray(product?.categories)
-        ? product.categories[0]?.name ?? null
-        : null,
-    }));
+    const { simplifiedProducts } =
+      await this.getSimplifiedProductsForStore(sallaStoreId);
 
     return simplifiedProducts;
+  }
+
+  @Get(':sallaStoreId/products/html')
+  @Header('Content-Type', 'text/html; charset=utf-8')
+  async getStoreProductsHtml(@Param('sallaStoreId') sallaStoreId: string) {
+    const { store, simplifiedProducts } =
+      await this.getSimplifiedProductsForStore(sallaStoreId);
+
+    return this.renderProductsHtml(store, simplifiedProducts);
   }
 
   @Put(':id/toggle-active')
@@ -305,6 +299,50 @@ export class SallaStoresController {
     }
   }
 
+  private async getSimplifiedProductsForStore(sallaStoreId: string) {
+    const store = await this.sallaStoresService.findBySallaStoreId(
+      sallaStoreId,
+    );
+
+    if (!store) {
+      throw new HttpException('Store not found', HttpStatus.NOT_FOUND);
+    }
+
+    const products = await this.sallaIntegrationService.getSallaProducts(
+      store.id,
+    );
+
+    const simplifiedProducts = this.simplifyProducts(products);
+
+    return { store, simplifiedProducts };
+  }
+
+  private simplifyProducts(products: any[]): SimplifiedProduct[] {
+    return products.map((product) => ({
+      sku: product?.sku ?? null,
+      type: product?.type ?? null,
+      name: product?.name ?? null,
+      customer_url: product?.urls?.customer ?? null,
+      price_amount: this.extractPriceAmount(product?.price),
+      price_currency: this.extractPriceCurrency(
+        product?.price,
+        product?.currency,
+      ),
+      description: product?.description ?? null,
+      quantity: product?.quantity ?? null,
+      status: product?.status ?? null,
+      is_available: product?.is_available ?? null,
+      sale_price_amount: this.extractPriceAmount(
+        product?.sale_price ?? product?.salePrice,
+      ),
+      sale_end: product?.sale_end ?? product?.saleEnd ?? null,
+      main_image: this.resolveMainImage(product),
+      primary_category_name: Array.isArray(product?.categories)
+        ? product.categories[0]?.name ?? null
+        : null,
+    }));
+  }
+
   private extractPriceAmount(price: any): number | string | null {
     if (price === undefined || price === null) {
       return null;
@@ -369,5 +407,72 @@ export class SallaStoresController {
     }
 
     return null;
+  }
+
+  private renderProductsHtml(
+    store: SallaStore,
+    products: SimplifiedProduct[],
+  ): string {
+    const columns: Array<{ key: keyof SimplifiedProduct; label: string }> = [
+      { key: 'sku', label: 'SKU' },
+      { key: 'type', label: 'Type' },
+      { key: 'name', label: 'Name' },
+      { key: 'customer_url', label: 'Customer URL' },
+      { key: 'price_amount', label: 'Price Amount' },
+      { key: 'price_currency', label: 'Currency' },
+      { key: 'description', label: 'Description' },
+      { key: 'quantity', label: 'Quantity' },
+      { key: 'status', label: 'Status' },
+      { key: 'is_available', label: 'Is Available' },
+      { key: 'sale_price_amount', label: 'Sale Price Amount' },
+      { key: 'sale_end', label: 'Sale End' },
+      { key: 'main_image', label: 'Main Image' },
+      { key: 'primary_category_name', label: 'Primary Category' },
+    ];
+
+    const headerRow = columns
+      .map((column) => `<th>${this.escapeHtml(column.label)}</th>`)
+      .join('');
+
+    const bodyRows = products
+      .map((product) => {
+        const cells = columns
+          .map((column) => {
+            const value = product[column.key] ?? '';
+            return `<td>${this.escapeHtml(value)}</td>`;
+          })
+          .join('');
+        return `<tr>${cells}</tr>`;
+      })
+      .join('');
+
+    return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title>${this.escapeHtml(
+      store.salla_store_name || 'Salla Store Products',
+    )}</title><style>body{font-family:Arial,Helvetica,sans-serif;margin:16px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:8px;text-align:left;}th{background-color:#f4f4f4;}</style></head><body><h1>${this.escapeHtml(
+      store.salla_store_name || 'Salla Store Products',
+    )}</h1><table><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table></body></html>`;
+  }
+
+  private escapeHtml(value: unknown): string {
+    if (value === null || value === undefined) {
+      return '';
+    }
+
+    return String(value).replace(/[&<>"']/g, (char) => {
+      switch (char) {
+        case '&':
+          return '&amp;';
+        case '<':
+          return '&lt;';
+        case '>':
+          return '&gt;';
+        case '"':
+          return '&quot;';
+        case "'":
+          return '&#39;';
+        default:
+          return char;
+      }
+    });
   }
 }
