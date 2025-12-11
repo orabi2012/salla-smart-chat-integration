@@ -6,6 +6,7 @@ import {
   Header,
   HttpException,
   HttpStatus,
+  Logger,
   Param,
   Post,
   Put,
@@ -39,6 +40,8 @@ type SimplifiedProduct = {
 
 @Controller('salla-stores')
 export class SallaStoresController {
+  private readonly logger = new Logger(SallaStoresController.name);
+
   constructor(
     private readonly sallaStoresService: SallaStoresService,
     private readonly sallaWebhookManagementService: SallaWebhookManagementService,
@@ -300,7 +303,7 @@ export class SallaStoresController {
   }
 
   private async getSimplifiedProductsForStore(sallaStoreId: string) {
-    const store = await this.sallaStoresService.findBySallaStoreId(
+    let store = await this.sallaStoresService.findBySallaStoreId(
       sallaStoreId,
     );
 
@@ -308,9 +311,70 @@ export class SallaStoresController {
       throw new HttpException('Store not found', HttpStatus.NOT_FOUND);
     }
 
-    const products = await this.sallaIntegrationService.getSallaProducts(
-      store.id,
+    const [products, storeInfo, appSettings] = await Promise.all([
+      this.sallaIntegrationService.getSallaProducts(store.id),
+      this.sallaIntegrationService
+        .getSallaStoreInfo(store.id)
+        .catch(() => null),
+      this.sallaIntegrationService.getAppSettings(store.id).catch(() => null),
+    ]);
+
+    this.logger.log(
+      `Salla store metadata fetched for ${store.salla_store_id}: info=${JSON.stringify(
+        storeInfo,
+      )}, appSettings=${JSON.stringify(appSettings)}`,
     );
+
+    const normalizedSettings = this.normalizeAppSettings(appSettings, storeInfo);
+    const storeUrl = this.extractStoreUrl(storeInfo);
+
+    const updatePayload: Partial<SallaStore> = {};
+
+    if (
+      normalizedSettings.email &&
+      normalizedSettings.email !== store.salla_owner_email
+    ) {
+      updatePayload.salla_owner_email = normalizedSettings.email;
+    }
+
+    if (
+      normalizedSettings.contactNumber &&
+      normalizedSettings.contactNumber !== store.salla_contact_number
+    ) {
+      updatePayload.salla_contact_number = normalizedSettings.contactNumber;
+    }
+
+    if (storeUrl && storeUrl !== store.salla_store_url) {
+      updatePayload.salla_store_url = storeUrl;
+    }
+
+    if (Object.keys(updatePayload).length > 0) {
+      const updatedStore = await this.sallaStoresService.update(
+        store.id,
+        updatePayload,
+      );
+      if (updatedStore) {
+        store = updatedStore;
+        this.logger.log(
+          `Salla store ${store.salla_store_id} metadata updated: ${JSON.stringify(
+            updatePayload,
+          )}`,
+        );
+      } else {
+        Object.assign(store, updatePayload);
+      }
+    } else {
+      // Ensure in-memory store instance reflects derived metadata
+      if (storeUrl && !store.salla_store_url) {
+        store.salla_store_url = storeUrl;
+      }
+      if (normalizedSettings.email && !store.salla_owner_email) {
+        store.salla_owner_email = normalizedSettings.email;
+      }
+      if (normalizedSettings.contactNumber && !store.salla_contact_number) {
+        store.salla_contact_number = normalizedSettings.contactNumber;
+      }
+    }
 
     const simplifiedProducts = this.simplifyProducts(products);
 
@@ -446,11 +510,40 @@ export class SallaStoresController {
       })
       .join('');
 
+    const metadata = [
+      {
+        label: 'Store URL',
+        value: store.salla_store_url,
+        isUrl: true,
+      },
+      {
+        label: 'Store Email',
+        value: store.salla_owner_email,
+      },
+      {
+        label: 'Contact Number',
+        value: store.salla_contact_number,
+      },
+    ].filter((item) => item.value);
+
+    const metadataHtml = metadata
+      .map((item) => {
+        const safeLabel = this.escapeHtml(item.label);
+        if (item.isUrl) {
+          const safeUrl = this.escapeHtml(item.value as string);
+          return `<p><strong>${safeLabel}:</strong> <a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeUrl}</a></p>`;
+        }
+        return `<p><strong>${safeLabel}:</strong> ${this.escapeHtml(
+          item.value,
+        )}</p>`;
+      })
+      .join('');
+
     return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title>${this.escapeHtml(
       store.salla_store_name || 'Salla Store Products',
-    )}</title><style>body{font-family:Arial,Helvetica,sans-serif;margin:16px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:8px;text-align:left;}th{background-color:#f4f4f4;}</style></head><body><h1>${this.escapeHtml(
+    )}</title><style>body{font-family:Arial,Helvetica,sans-serif;margin:16px;}h1{margin-bottom:8px;}h2{margin-top:24px;}table{border-collapse:collapse;width:100%;margin-top:16px;}th,td{border:1px solid #ccc;padding:8px;text-align:left;vertical-align:top;}th{background-color:#f4f4f4;}a{color:#0b5ed7;text-decoration:none;}a:hover{text-decoration:underline;} .store-meta{background:#f9f9f9;border:1px solid #e1e1e1;padding:12px;border-radius:6px;margin-top:12px;}</style></head><body><h1>${this.escapeHtml(
       store.salla_store_name || 'Salla Store Products',
-    )}</h1><table><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table></body></html>`;
+    )}</h1><div class="store-meta">${metadataHtml || '<p>No store details available.</p>'}</div><h2>Products</h2><table><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table></body></html>`;
   }
 
   private escapeHtml(value: unknown): string {
@@ -474,5 +567,78 @@ export class SallaStoresController {
           return char;
       }
     });
+  }
+
+  private normalizeAppSettings(appSettings: any, storeInfo: any): {
+    email: string | null;
+    contactNumber: string | null;
+  } {
+    const settingsObj =
+      (appSettings && (appSettings.settings ?? appSettings)) || {};
+
+    const emailCandidates = [
+      settingsObj.email,
+      appSettings?.email,
+      storeInfo?.owner_email,
+      storeInfo?.email,
+      storeInfo?.store?.owner_email,
+      storeInfo?.store?.email,
+    ];
+
+    const contactCandidates = [
+      settingsObj.contact_no,
+      settingsObj['contact_no.'],
+      settingsObj.contact_number,
+      settingsObj.contract_no,
+      settingsObj['contract_no.'],
+      settingsObj.phone,
+      settingsObj.phone_number,
+      settingsObj.mobile,
+      settingsObj.whatsapp,
+      appSettings?.contact_number,
+      storeInfo?.phone,
+      storeInfo?.contact_number,
+      storeInfo?.store?.phone,
+      storeInfo?.store?.contact_number,
+    ];
+
+    const normalize = (value: any): string | null => {
+      if (value === undefined || value === null) {
+        return null;
+      }
+      const trimmed = String(value).trim();
+      return trimmed.length > 0 ? trimmed : null;
+    };
+
+    const email = emailCandidates.map(normalize).find((val) => val) ?? null;
+    const contactNumber =
+      contactCandidates.map(normalize).find((val) => val) ?? null;
+
+    return { email, contactNumber };
+  }
+
+  private extractStoreUrl(storeInfo: any): string | null {
+    if (!storeInfo) {
+      return null;
+    }
+
+    const candidates = [
+      storeInfo.url,
+      storeInfo.domain,
+      storeInfo.store_url,
+      storeInfo?.store?.url,
+      storeInfo?.store?.domain,
+      storeInfo?.links?.store,
+    ];
+
+    for (const candidate of candidates) {
+      if (!candidate) continue;
+      const value = String(candidate).trim();
+      if (value) {
+        return value;
+      }
+    }
+
+    return null;
   }
 }

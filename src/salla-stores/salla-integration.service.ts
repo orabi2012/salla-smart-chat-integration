@@ -9,6 +9,7 @@ import { isValidUUID } from '../utils/uuid.helper';
 export class SallaIntegrationService {
   private readonly baseUrl =
     process.env.SALLA_BASE_URL ?? 'https://api.salla.dev/admin/v2';
+  private readonly appId = process.env.SALLA_APP_ID;
 
   constructor(
     @InjectRepository(SallaStore)
@@ -45,6 +46,30 @@ export class SallaIntegrationService {
       const status = error.response?.status ?? HttpStatus.BAD_GATEWAY;
       const message =
         error.response?.data?.message ?? 'Failed to fetch Salla store info';
+      throw new HttpException(message, status);
+    }
+  }
+
+  async getAppSettings(storeId: string): Promise<any | null> {
+    if (!this.appId) {
+      return null;
+    }
+
+    const store = await this.getStoreOrThrow(storeId);
+
+    try {
+      const response = await axios.get(
+        `${this.baseUrl}/apps/${this.appId}/settings`,
+        {
+          headers: this.buildHeaders(store),
+        },
+      );
+
+      return response.data?.data ?? null;
+    } catch (error) {
+      const status = error.response?.status ?? HttpStatus.BAD_GATEWAY;
+      const message =
+        error.response?.data?.message ?? 'Failed to fetch Salla app settings';
       throw new HttpException(message, status);
     }
   }

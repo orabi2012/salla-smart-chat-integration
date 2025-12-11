@@ -34,6 +34,9 @@ export class SallaStore {
   @Column()
   salla_owner_email: string;
 
+  @Column({ nullable: true })
+  salla_contact_number: string;
+
   @Column()
   salla_access_token: string;
 
@@ -54,6 +57,9 @@ export class SallaStore {
 
   @Column({ default: 'USD' })
   ubiqfy_currency: string; // Ubiqfy's base currency
+
+  @Column({ nullable: true })
+  salla_store_url: string;
 
   // Ubiqfy Authentication Fields
   @Column()
