@@ -110,12 +110,32 @@ export class SallaStoresController {
     const products = await this.sallaIntegrationService.getSallaProducts(
       store.id,
     );
-    return {
-      store_id: store.id,
-      salla_store_id: store.salla_store_id,
-      total: products.length,
-      data: products,
-    };
+
+    const simplifiedProducts = products.map((product) => ({
+      sku: product?.sku ?? null,
+      type: product?.type ?? null,
+      name: product?.name ?? null,
+      customer_url: product?.urls?.customer ?? null,
+      price_amount: this.extractPriceAmount(product?.price),
+      price_currency: this.extractPriceCurrency(
+        product?.price,
+        product?.currency,
+      ),
+      description: product?.description ?? null,
+      quantity: product?.quantity ?? null,
+      status: product?.status ?? null,
+      is_available: product?.is_available ?? null,
+      sale_price_amount: this.extractPriceAmount(
+        product?.sale_price ?? product?.salePrice,
+      ),
+      sale_end: product?.sale_end ?? product?.saleEnd ?? null,
+      main_image: this.resolveMainImage(product),
+      primary_category_name: Array.isArray(product?.categories)
+        ? product.categories[0]?.name ?? null
+        : null,
+    }));
+
+    return simplifiedProducts;
   }
 
   @Put(':id/toggle-active')
@@ -283,5 +303,71 @@ export class SallaStoresController {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  private extractPriceAmount(price: any): number | string | null {
+    if (price === undefined || price === null) {
+      return null;
+    }
+
+    if (typeof price === 'number' || typeof price === 'string') {
+      return price;
+    }
+
+    if (typeof price === 'object') {
+      const candidate =
+        price.amount ??
+        price.value ??
+        price.current ??
+        price.price ??
+        price.total ??
+        price.selling_price;
+
+      if (candidate !== undefined && candidate !== null) {
+        return candidate;
+      }
+    }
+
+    return null;
+  }
+
+  private extractPriceCurrency(price: any, fallback?: string): string | null {
+    if (!price && !fallback) {
+      return null;
+    }
+
+    if (price && typeof price === 'object') {
+      const currency = price.currency ?? price.currency_code ?? price.code;
+      if (currency) {
+        return currency;
+      }
+    }
+
+    return fallback ?? null;
+  }
+
+  private resolveMainImage(product: any): string | null {
+    if (product?.main_image) {
+      return product.main_image;
+    }
+
+    const mediaSources = [product?.media, product?.images, product?.gallery];
+    for (const source of mediaSources) {
+      if (Array.isArray(source) && source.length > 0) {
+        const first = source[0];
+        if (typeof first === 'string') {
+          return first;
+        }
+        if (first && typeof first === 'object') {
+          const url =
+            first.url ?? first.image_url ?? first.image ?? first.src ?? null;
+          if (url) {
+            return url;
+          }
+        }
+      }
+    }
+
+    return null;
   }
 }
