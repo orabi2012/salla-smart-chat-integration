@@ -3,7 +3,6 @@ import {
   Catch,
   ArgumentsHost,
   UnauthorizedException,
-  ForbiddenException,
   HttpStatus,
   HttpException,
 } from '@nestjs/common';
@@ -11,25 +10,49 @@ import { Request, Response } from 'express';
 
 @Catch(UnauthorizedException)
 export class AuthExceptionFilter implements ExceptionFilter {
+  private isApiRequest(request: Request): boolean {
+    const contentType = request.headers['content-type'] ?? '';
+    const accept = request.headers['accept'] ?? '';
+
+    if (
+      contentType.includes('application/json') ||
+      accept.includes('application/json') ||
+      request.url.startsWith('/api/') ||
+      request.xhr
+    ) {
+      return true;
+    }
+
+    const publicApiPatterns = [
+      /^\/salla-stores\/[^/]+\/products(?:\/html)?/,
+    ];
+
+    return publicApiPatterns.some((pattern) => pattern.test(request.url));
+  }
+
   catch(exception: UnauthorizedException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
     // Check if it's an API request (JSON content type or Accept header)
-    const isApiRequest =
-      request.headers['content-type']?.includes('application/json') ||
-      request.headers['accept']?.includes('application/json') ||
-      request.url.startsWith('/api/') ||
-      request.xhr; // XMLHttpRequest
+    const isApiRequest = this.isApiRequest(request);
 
     if (isApiRequest) {
-      // For API requests, return JSON response
-      response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Unauthorized',
-        statusCode: 401,
-        redirectTo: '/auth/login',
-      });
+      const errorResponse = exception.getResponse();
+      const payload: Record<string, any> =
+        typeof errorResponse === 'string'
+          ? { message: errorResponse }
+          : { ...errorResponse };
+
+      if (payload.statusCode === undefined) {
+        payload.statusCode = HttpStatus.UNAUTHORIZED;
+      }
+      if (payload.redirectTo === undefined) {
+        payload.redirectTo = '/auth/login';
+      }
+
+      response.status(HttpStatus.UNAUTHORIZED).json(payload);
     } else {
       // For web requests, redirect to login page
       response.redirect('/auth/login');
@@ -39,26 +62,51 @@ export class AuthExceptionFilter implements ExceptionFilter {
 
 @Catch(HttpException)
 export class GlobalExceptionFilter implements ExceptionFilter {
+  private isApiRequest(request: Request): boolean {
+    const contentType = request.headers['content-type'] ?? '';
+    const accept = request.headers['accept'] ?? '';
+
+    if (
+      contentType.includes('application/json') ||
+      accept.includes('application/json') ||
+      request.url.startsWith('/api/') ||
+      request.xhr
+    ) {
+      return true;
+    }
+
+    const publicApiPatterns = [
+      /^\/salla-stores\/[^/]+\/products(?:\/html)?/,
+    ];
+
+    return publicApiPatterns.some((pattern) => pattern.test(request.url));
+  }
+
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
 
+    const treatAsApi = this.isApiRequest(request);
+
     // Handle 401 Unauthorized specifically
     if (status === HttpStatus.UNAUTHORIZED) {
-      const isApiRequest =
-        request.headers['content-type']?.includes('application/json') ||
-        request.headers['accept']?.includes('application/json') ||
-        request.url.startsWith('/api/') ||
-        request.xhr;
+      if (treatAsApi) {
+        const errorResponse = exception.getResponse();
+        const payload: Record<string, any> =
+          typeof errorResponse === 'string'
+            ? { message: errorResponse }
+            : { ...errorResponse };
 
-      if (isApiRequest) {
-        response.status(status).json({
-          message: 'Unauthorized',
-          statusCode: 401,
-          redirectTo: '/auth/login',
-        });
+        if (payload.statusCode === undefined) {
+          payload.statusCode = status;
+        }
+        if (payload.redirectTo === undefined) {
+          payload.redirectTo = '/auth/login';
+        }
+
+        response.status(status).json(payload);
       } else {
         response.redirect('/auth/login');
       }
@@ -66,14 +114,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Handle 403 Forbidden specifically
     else if (status === HttpStatus.FORBIDDEN) {
       const message = exception.message;
-      const isApiRequest =
-        request.headers['content-type']?.includes('application/json') ||
-        request.headers['accept']?.includes('application/json') ||
-        request.url.startsWith('/api/') ||
-        request.url.startsWith('/salla-stores/') ||
-        request.xhr;
-
-      if (isApiRequest) {
+      if (treatAsApi) {
         // Return JSON response for API requests
         response.status(status).json({
           statusCode: status,
